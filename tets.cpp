@@ -1,5 +1,12 @@
 #include <iostream>
-
+//This game will have the user guess a number between 1-100.
+//Author: Emily Yarvis
+// Date: 9/13/22
+//1. No global variables. (Global constants are all right.)
+//2. No strings. Not ever. (You can use cstring
+//3. You should include <iostream>, not stdio. (This applies more to C programmers.)
+//
+//
 using namespace std;
 int randomNumber=0;
 int guess =0;
