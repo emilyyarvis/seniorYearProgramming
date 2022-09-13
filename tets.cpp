@@ -8,6 +8,7 @@
 //
 //
 using namespace std;
+//initializes variables
 int randomNumber=0;
 int guess =0;
 int numGuesses = 0;
@@ -17,37 +18,39 @@ char answer ='a';
 
 int main(){
 
+  //creates the random number
   srand(time(NULL));
   randomNumber = (rand()%100);
   cout << randomNumber << endl; 
 
-  while (guessed == false){
-    cout << "Guess a Number Between 0-100" << endl;
-    cin >> guess;
-    if(guess != randomNumber){
-      if(guess <0 || guess>100){
+  while (guessed == false){//while the user has not guessed the number
+    cout << "Guess a Number Between 0-100" << endl;//asks you to enter a number
+    cin >> guess;//takes in a number from the user
+    if(guess != randomNumber){//if it doesnt equal the random number finds out if its a valid guess or not
+      if(guess <0 || guess>100){//in valid
 	cout << "That is not a valid guess try again" << endl;
       }
-      else if(guess> randomNumber){
+      else if(guess> randomNumber){//valid and too high
 	cout<< "That number is higher then the random number, try again"<<endl;
 	++numGuesses;
       }
-      else if(guess < randomNumber){
-	cout << "That number is lowerw then the random number, try again" <<endl;
+      else if(guess < randomNumber){//valid and too low
+	cout << "That number is lowew then the random number, try again" <<endl;
 	++numGuesses;
       }
-      else{
+      else{//invalid
 	cout << "That is not a valid guess try again" << endl;
       }
     }
-    else if(guess == randomNumber){
+    else if(guess == randomNumber){//if the guess is the random number
       ++numGuesses;
       cout << "You Guessed The Number"<< endl;
       cout << "It took you " << numGuesses <<endl;
 
-      guessed = true;
+      guessed = true;//sets that you guessed the number and ends the while loop
     }
   }
+  //asks if you want to play again
   cout << "want to play again?" << endl;
   cout << "answer y or n" << endl;
   cin >> answer;
@@ -56,9 +59,10 @@ int main(){
   }
   else if(answer == 'y'){
     cout<< "lets do it" << endl;
+    //resets all variables for new game
     guessed = false;
     numGuesses = 0;
-    main();
+    main();//runs main again/runs game again
 
   }
   
