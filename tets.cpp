@@ -15,7 +15,10 @@ int numGuesses = 0;
 bool guessed = false;
 bool playAgain = false;
 char answer ='a';
-
+int PLAYING = 4;
+int GUESSED = 5;
+int DONE = 6;
+int state = 7;
 int main(){
 
   //creates the random number
@@ -24,6 +27,7 @@ int main(){
   cout << randomNumber << endl; 
 
   while (guessed == false){//while the user has not guessed the number
+    state = PLAYING;
     cout << "Guess a Number Between 0-100" << endl;//asks you to enter a number
     cin >> guess;//takes in a number from the user
     if(guess != randomNumber){//if it doesnt equal the random number finds out if its a valid guess or not
@@ -48,28 +52,32 @@ int main(){
       cout << "It took you " << numGuesses <<endl;
 
       guessed = true;//sets that you guessed the number and ends the while loop
+      state = GUESSED;
+
     }
   }
   //asks if you want to play again
-  cout << "want to play again?" << endl;
-  cout << "answer y or n" << endl;
-  cin >> answer;
-  if(answer == 'n'){
-    cout << "whelp goodbye"<<endl;
-  }
-  else if(answer == 'y'){
-    cout<< "lets do it" << endl;
-    //resets all variables for new game
-    guessed = false;
-    numGuesses = 0;
-    main();//runs main again/runs game again
-
-  }
-  
-  else{
-    cout<< "this isnt a valid response"<< endl;
-  }
-			   
+  while(state == GUESSED){
+    cout << "want to play again?" << endl;
+    cout << "answer y or n" << endl;
+    cin >> answer;
+    if(answer == 'n'){
+      cout << "whelp goodbye"<<endl;
+      state= DONE;
+    }
+    else if(answer == 'y'){
+      state = PLAYING;
+      cout<< "lets do it" << endl;
+      //resets all variables for new game
+      guessed = false;
+      numGuesses = 0;
+      main();//runs main again/runs game again
+      
+    }
+    else{
+      cout<< "this isnt a valid response"<< endl;
+    }
+  }  
   return 0;
 }
  
