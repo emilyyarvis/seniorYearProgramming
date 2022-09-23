@@ -7,70 +7,68 @@ using namespace std;
 int main(){
 
   //initializes variables
-  int n = 200000;
-  char alphabet[] = "abcdefghijklmnopqrstuvwxyz";
+  int n = 80;//max charecters that can be checked
+  char alphabet[] = "abcdefghijklmnopqrstuvwxyz";//regular alphabet
+  char capsAlphabet[] ="ABCDEFGHIJKLMNOPQRSTUVWXYZ";//caps alphabet
+  char initialStr[n];
   char str[n];
   char str2[n];
   int count = 0;
   int length = 0;
+  int trueLength = 0;
+  int track =0;
   
   //gets the input from the user
   cout << "type in a word"<<endl;
-  cin.get(str,n);
+  cin.get(initialStr,n);//calls initialStr this inputted value
   cin.get();
-  cout <<"bruh "<< str<<endl;
-  cout<<"n: " <<n<<endl;
   
   
    for(int i =0; i<n; i++){
-    
-     if(str[i] == '\0'){
+     if(initialStr[i] == '\0'){//finds the real length of the char string
        cout<<"found"<<endl;
-       length = i;
+       length = i;//sets it as length
        break;
      } 
     }
-   cout<< "Length: " << length <<endl;
 
+   //converts all charecters to lettercase & removes spaces and punctuation
+   for(int i =0; i<length;i++){//go through the whole input stirng
+     for(int j = 0; j<26; j++){//goes through the letters in the alphabet
+       if(initialStr[i] == alphabet[j]){//replaces when it matches
+	 str[track] = alphabet[j];
+	 track++;//only adds when theres a charecter so removes spaces & punctuation
+       }
+       else if(initialStr[i] == capsAlphabet[j]){//goes through and matches capital letters if needed
+	 str[track] = alphabet[j];
+	 track++;//skips spaces and punctuation
+       }
+      
+     }
+     
+   }
+   trueLength = track;//resets length to the length of the string without the spaces and punctuation
+   str[trueLength] = '\0';//adds null charecter to the end of converted string
+
+   
+   
    //making the opposite string
 
-   str2[length] = str[length];
-    count = length -1;
-   for(int i=0; i<=(length-1);i++){
+   str2[trueLength] = str[trueLength];//adds null charceter to the end of the opposite string
+    count = trueLength -1;
+    for(int i=0; i<=(trueLength-1);i++){//goes through the string and puts charceters in opposite order into new string
      str2[count] = str[i];
      count--;
    }
-   
-   //debugging////////////////////////
-   for(int i=0; i<=length; i++){    //
-     cout<< "bish " <<str[i]<<endl; //
-   }                                //
-   for(int i =0; i<=length; i++){   //
-     cout<<"bro " << str2[i]<<endl; //
-   }                                //
-   for(int i=length;i>=0; i--){     //
-     cout<<"shoot "<< str2[i]<<endl;//
-   }                                //
-   ///////////////////////////////////
-   
   
   cout <<"Answer: "<< str2<<endl;
 
   //comparing the strings
   if(strcmp(str,str2) == 0){
-    cout<< "GG"<<endl;
+    cout<< "This is a palindrome!"<<endl;
   }
   else{
-    cout<<"double GG"<<endl;
+    cout<<"This is not a palindrome"<<endl;
   }
-
-
-  if('A' == 'a'){
-    cout<<"ooh instretsin"<<endl;
-  }
-  else if('A'!='a'){
-    cout<<"darn"<<endl;
-  }
-  
   return 0;
 }
