@@ -168,6 +168,7 @@ int main(){
 	else if(input3=="YEAR"){//same thing but searching by year
 	  bool repeat2=true;
           int inputYear;
+	  char answer;
           while(repeat2==true){
 
             cout<<"What year would you like to search for"<<endl;
@@ -183,6 +184,27 @@ int main(){
                 repeat2=false;
 	      }
 	    }
+	    ////////////////////////////////////////////////////////                        
+            cout<<"do you want to delete the(se) objects(y/n)"<<endl;
+            cin>>answer;
+            if(answer == 'y'){
+              for(int i = 0;i<storage.size();i++){
+                if(storage[i]->getYear() == inputYear){
+                  cout<<"Title: "<<storage[i]->getTitle()<<endl;
+                  cout<<"Year: "<<storage[i]->getYear()<<endl;
+                  cout<<"Publisher: "<<storage[i]->getPublisher()<<endl;
+                  cout<<"Rating: "<<storage[i]->getRating()<<endl;
+                  cout<<"Director: "<<storage[i]->getDirector()<<endl;
+                  cout<<"Duration: "<<storage[i]->getDuration()<<endl;
+                  // storage.remove(1);//need to fix this                                   
+                }
+              }
+
+            }
+            else{
+              cout<<"Ok I wont"<<endl;
+            }
+            ///////////////////////////////////////////////////////////    
 	  }
 	}
 	else if(input3 =="EXIT"){//if the user wants to exit
