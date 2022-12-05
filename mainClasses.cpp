@@ -219,7 +219,21 @@ int main(){
     }
 
     else if(userInput=="DELETE"){//directs user to how they can delete things(was more efficient to code this way)
-      cout<<"use the search function to delete items"<<endl;
+      //cout<<"use the search function to delete items"<<endl;
+      string input;
+      //mediaTypes::iterator it;
+      cout<<"Please enter the title of media you would like to delete"<<endl;
+      cin>>input;
+      for(int i = 0; i<storage.size();i++){
+	if(input == storage[i]->getTitle()){
+	  int index =i;
+	  storage.erase(storage.begin() +index);
+	  cout<<input<<" has been removed"<<endl;
+	}
+	else{
+	  cout<<"this title could not be found"<<endl;
+	}
+      }
     }
     else if(userInput =="BREAK"){//if at anytime the user wants to stop
       break;
