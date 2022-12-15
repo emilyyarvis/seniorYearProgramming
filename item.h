@@ -5,12 +5,12 @@ using namespace std;
 
 class item{
  public:
-  item(char name[10]);
-  void getItemName();
+  item(string name);
+  string getItemName();
   
   
   
  protected:
-  char itemName[10];
+  string itemName;
 
 };

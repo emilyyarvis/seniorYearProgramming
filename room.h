@@ -7,12 +7,15 @@ using namespace std;
 class room{
  public:
   room(string description);
-  void setItem(item newItem );
-  void getItemName();
-  void setExit();
+  string getRoomDescription();
+  void setItem(item* newItem );
+  void removeItem(item* newItem);
+  void getRoomItems();
+  void setExit(string direction, room* roomIndex);
   void getExits();
   
  private:
   string roomDescription;
-  vector<item>itemList;
+  vector<item*>itemList;
+  map<string, room*> exits;
 };

@@ -4,7 +4,11 @@
 
 using namespace std;
 
-item::item(char name[10]){
-  strcpy(itemName,name);
+item::item(string name){
+  itemName = name;
 
+}
+string item::getItemName(){
+
+  return itemName;
 }
