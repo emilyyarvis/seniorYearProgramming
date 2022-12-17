@@ -15,17 +15,33 @@ void room::setItem(item* newItem){
   itemList.push_back(newItem);
 }
 
-void room::removeItem(item* newItem){
+bool room::removeItem(string inputItem){
+  //bool itemRemoved=false;;
   for(int i=0; i<itemList.size();i++){
-    if(newItem == itemList[i]){
-      cout<<"yay"<<endl;
+    if(itemList[i]->getItemName()==inputItem){
+      int index = i;
+      itemList.erase(itemList.begin()+index);
+      cout<<itemList[i]->getItemName()<<" has been added to your inventory"<<endl;
+      return true;
     }
   }
+  cout<<"This item is not in the room"<<endl;
+  return false;
 }
+bool room::checkForItem(string inputItem){
+
+for(int i=0; i<itemList.size();i++){
+  if(itemList[i]->getItemName()== inputItem){
+    return true;   
+  }
+ }
+ return false;
+}
+
 
 void room::getRoomItems(){
   for(int i=0; i<itemList.size();i++){
-    cout<<itemList[i]->getItemName()<<", "<<endl;
+    cout<<"-"<<itemList[i]->getItemName()<<endl;
   }
 }
 
@@ -43,4 +59,17 @@ void room::getExits(){
   }
 }
 
+void room::getSpecificExits(string direction){
+
+ map<string, room*>::iterator i;
+
+
+  for (i = exits.begin(); i != exits.end(); i++) {
+    if(i->first == direction){
+      cout<< i->second->getRoomDescription()<<endl;
+      //return i->second->getRoomDescription();
+	}
+  }
+  
+}
   

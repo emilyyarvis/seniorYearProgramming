@@ -8,27 +8,34 @@ using namespace std;
 
 int main(){
 
-  bool loop=true;
-  char userInput[100];
-  //create Rooms
-  room* mainHall = new room("Look my first room");
-  room* outside= new room("This is the outside");
-  room* parlor = new room("this is the parlor");
-  room* garage = new room("this is a garage");
-  room* movieRoom = new room("this is the movie room");
-  room* pokerRoom = new room("This is the poker room");
-  room* wineCellar = new room("This is the wine cellar");
-  room* dungeon = new room("this is the dungeon");
-  room* diningHall = new room("this is the dining room");
-  room* kitchen = new room("this is the kitchen");
-  room* meatCellar = new room("this is the kitchen");
-  room* bathroom = new room("this is the bathroom");
-  room* library = new room("this is the library");
-  room* ballroom = new room("this is the ballroom");
-  room* balcony = new room("this is the balcony");
-  room* mirrorRoom = new room("This is the room of many mirrors");
+  vector<string>inventory;
   
+  bool loop=true;
+  //char userInput[100];
+  //create Rooms
+  room* mainHall = new room("The Main Hall");
+  room* outside= new room("The Outside");
+  room* parlor = new room("The Parlor");
+  room* garage = new room("The Garage");
+  room* movieRoom = new room("The Movie room");
+  room* pokerRoom = new room("The Poker Room");
+  room* wineCellar = new room("The Wine Cellar");
+  room* dungeon = new room("The Dungeon");
+  room* diningHall = new room("The Dining Room");
+  room* kitchen = new room("The Kitchen");
+  room* meatCellar = new room("The Meat Cellar");
+  room* bathroom = new room("The Bathroom");
+  room* library = new room("The Library");
+  room* ballroom = new room("The Ballroom");
+  room* balcony = new room("The Balcony");
+  room* mirrorRoom = new room("The Room Of Many Mirrors");
+
+  room* currentRoom;
+
+  currentRoom = garage;
+  currentRoom->getRoomItems();
   //cout<<mainHall->getRoomDescription()<<endl;
+  
   //intialize exits
   mainHall->setExit("south", outside);
   mainHall->setExit("west",parlor);
@@ -103,6 +110,7 @@ int main(){
   //
   garage->setItem(workBench);
   garage->setItem(hammer);
+  //currentRoom->getRoomItems();
   //
   //kitchen->setItem(knife);
   //kitchen->setItem(Avocado);
@@ -121,24 +129,52 @@ int main(){
   //
   //kitchen->setItem(knife);
   //kitchen->setItem(Avocado);
-  
-  garage->removeItem(avocado);
+
+  //garage->getRoomItems();
+  //cout<<""<<endl;
+  //garage->removeItem(hammer);
+  //garage->getRoomItems();
+
   
   while(loop == true){
     cout<<"Insert instructions here"<<endl;
-    cin.get(userInput,100);
-    if(strcmp(userInput,"EXIT")==0){
+    cout<<"You are in "<<currentRoom->getRoomDescription()<<endl;
+    cout<<"Items in the room:"<<endl;
+    currentRoom->getRoomItems();
+
+    string userInput;
+    cin>>userInput;
+    if(userInput == "EXIT"){
       loop = false;
     }
-    else if(strcmp(userInput,"GO")==0){
-      cout<<"something soon"<<endl;
+    else if(userInput == "GO"){
+      string directionInput;
+      cout<<"which direction would you like to go"<<endl;
+      cin>> directionInput;
+      currentRoom->getSpecificExits(directionInput);
+      
     }
-    else if(strcmp(userInput, "GET")==0){
-	cout<<"somethig soon"<<endl;
+    else if(userInput == "INVENTORY"){
+
+
+    }
+    else if(userInput =="GET"){
+      string itemInput;
+      cout<<"Which item would you like to pick up"<<endl;
+      cin>>itemInput;
+      
+      if(currentRoom->checkForItem(itemInput) == true){
+	currentRoom->removeItem(itemInput);
+	inventory.push_back(itemInput);
       }
-    else{
-      cout<<"thta is not a valid command"<<endl;
+      else if(currentRoom->checkForItem(itemInput) == false){
+	cout<<"This item is not in this room"<<endl;
+      }
     }
+    else{
+      cout<<"That is an invalid command please try again"<<endl;
+    }
+    
   }
 }
 
