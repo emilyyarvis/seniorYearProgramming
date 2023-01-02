@@ -9,27 +9,43 @@ using namespace std;
 int main(){
 
   vector<string>inventory;
+  vector<room*>roomList;
   
   bool loop=true;
   //char userInput[100];
   //create Rooms
   room* mainHall = new room("The Main Hall");
+  roomList.push_back(mainHall);
   room* outside= new room("The Outside");
+  roomList.push_back(outside);
   room* parlor = new room("The Parlor");
+  roomList.push_back(parlor);
   room* garage = new room("The Garage");
+  roomList.push_back(garage);
   room* movieRoom = new room("The Movie room");
+  roomList.push_back(movieRoom);
   room* pokerRoom = new room("The Poker Room");
+  roomList.push_back(pokerRoom);
   room* wineCellar = new room("The Wine Cellar");
+  roomList.push_back(wineCellar);
   room* dungeon = new room("The Dungeon");
+  roomList.push_back(dungeon);
   room* diningHall = new room("The Dining Room");
+  roomList.push_back(diningHall);
   room* kitchen = new room("The Kitchen");
+  roomList.push_back(kitchen);
   room* meatCellar = new room("The Meat Cellar");
+  roomList.push_back(meatCellar);
   room* bathroom = new room("The Bathroom");
+  roomList.push_back(bathroom);
   room* library = new room("The Library");
+  roomList.push_back(library);
   room* ballroom = new room("The Ballroom");
+  roomList.push_back(ballroom);
   room* balcony = new room("The Balcony");
+  roomList.push_back(balcony);
   room* mirrorRoom = new room("The Room Of Many Mirrors");
-
+  roomList.push_back(mirrorRoom);
   room* currentRoom;
 
   currentRoom = garage;
@@ -110,6 +126,8 @@ int main(){
   //
   garage->setItem(workBench);
   garage->setItem(hammer);
+  parlor->setItem(dvd);
+  parlor->setItem(avocado);
   //currentRoom->getRoomItems();
   //
   //kitchen->setItem(knife);
@@ -149,14 +167,47 @@ int main(){
     }
     else if(userInput == "GO"){
       string directionInput;
+      int index=0;
       cout<<"which direction would you like to go"<<endl;
       cin>> directionInput;
-      currentRoom->getSpecificExits(directionInput);
-      
+       cout<<currentRoom->getSpecificExits(directionInput)<<endl;
+       cout<<roomList[1]->getRoomDescription()<<endl;
+      for(int i=0;i<roomList.size();i++){
+	if(roomList[i]->getRoomDescription() == currentRoom->getSpecificExits(directionInput)){
+	  cout<<roomList[i]->getRoomDescription()<<endl;
+	  cout<<currentRoom->getSpecificExits(directionInput)<<endl;
+	  index = i;
+	}
+      }
+      currentRoom = roomList[index];
     }
     else if(userInput == "INVENTORY"){
-
-
+      cout<<"Items in your inventory: "<<endl;
+      for(int i=0;i<inventory.size();i++){
+	cout<<inventory[i]<<endl;
+      }
+      cout<<endl;
+    }
+    else if(userInput == "DROP"){
+      string dropItem;
+      bool found = false;
+      string droppedItem;
+      cout<<"What item would you like to drop?"<<endl;
+      cin>>dropItem;
+      for(int i=0;i<inventory.size();i++){
+        if(inventory[i] == dropItem){
+	  int index =i;
+          inventory.erase(inventory.begin() +index);//erases it from the list 
+	  cout<<dropItem<<" has been removed"<<endl;
+	  droppedItem = inventory[i];
+	  found = true;
+	  item* newItem = new item(droppedItem);
+	  currentRoom->setItem(newItem);
+	}
+      }
+      if(found == false){
+	cout<<"That item is not in your inventory"<<endl;
+      }
     }
     else if(userInput =="GET"){
       string itemInput;

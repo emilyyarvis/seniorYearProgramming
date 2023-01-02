@@ -59,17 +59,17 @@ void room::getExits(){
   }
 }
 
-void room::getSpecificExits(string direction){
+string room::getSpecificExits(string direction){
 
  map<string, room*>::iterator i;
-
+ string description;
 
   for (i = exits.begin(); i != exits.end(); i++) {
     if(i->first == direction){
-      cout<< i->second->getRoomDescription()<<endl;
-      //return i->second->getRoomDescription();
+      description=i->second->getRoomDescription();
+      
 	}
   }
-  
+  return description;
 }
   
