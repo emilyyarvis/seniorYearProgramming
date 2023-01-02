@@ -12,7 +12,8 @@ int main(){
   vector<room*>roomList;
   
   bool loop=true;
-  //char userInput[100];
+  bool win=false;
+ 
   //create Rooms
   room* mainHall = new room("The Main Hall");
   roomList.push_back(mainHall);
@@ -47,11 +48,9 @@ int main(){
   room* mirrorRoom = new room("The Room Of Many Mirrors");
   roomList.push_back(mirrorRoom);
   room* currentRoom;
-
-  currentRoom = garage;
-  currentRoom->getRoomItems();
-  //cout<<mainHall->getRoomDescription()<<endl;
   
+  currentRoom = outside;
+ 
   //intialize exits
   mainHall->setExit("south", outside);
   mainHall->setExit("west",parlor);
@@ -59,7 +58,6 @@ int main(){
   //
   outside->setExit("north", mainHall);
   outside->setExit("west",garage);
- 
   //
   parlor->setExit("south", garage);
   parlor->setExit("north",movieRoom);
@@ -70,18 +68,11 @@ int main(){
   //
   movieRoom->setExit("south", parlor);
   movieRoom->setExit("east",pokerRoom);
-  //movieRoom->setExit("east", diningHall); secret room
   //
   pokerRoom->setExit("north", wineCellar);
   pokerRoom->setExit("west", movieRoom);
   //
-
-  //dungeon
-
-  //
   wineCellar->setExit("south", pokerRoom);
-  //mainHall->setExit("west",dungeon);
-  
   //
   diningHall->setExit("south", kitchen);
   diningHall->setExit("west",mainHall);
@@ -109,93 +100,97 @@ int main(){
   //
   meatCellar->setExit("east", kitchen);
   //
-  //
-  item* knife = new item("Knife");
-  item* workBench = new item("workBench");
+  
+  //setItems
+  item* key = new item("key");
+  item* book = new item("book");
+  item* mirror = new item("mirror");
+  item* wine = new item("wine");
   item* hammer = new item("hammer");
-  item* form = new item("fork");
-  item* table = new item ("table");
-  item* projector = new item("projector");
-  item* couch = new item("couch");
-  item* sign = new item("key sign");
+  item* fork = new item("fork");
+  item* knife = new item("knife");
   item* dvd = new item("Old Movie");
   item* avocado = new item("Avocado");
-  item* counterTop = new item("Countertop");
   item* corpse = new item("Hanging Corpse");
-  
+  item* Mysterious_Box = new item("Mysterious_Box");
   //
-  garage->setItem(workBench);
+  outside->setItem(Mysterious_Box);
+  bathroom->setItem(key);
+  mirrorRoom->setItem(mirror);
+  library->setItem(book);
+  diningHall->setItem(fork);
+  kitchen->setItem(knife);
+  kitchen->setItem(avocado);
+  meatCellar->setItem(corpse);
+  wineCellar->setItem(wine);
+  movieRoom->setItem(dvd);
   garage->setItem(hammer);
-  parlor->setItem(dvd);
-  parlor->setItem(avocado);
-  //currentRoom->getRoomItems();
-  //
-  //kitchen->setItem(knife);
-  //kitchen->setItem(Avocado);
-  //
-  //kitchen->setItem(knife);
-  //kitchen->setItem(Avocado);
-  //
-  //kitchen->setItem(knife);
-  //kitchen->setItem(Avocado);
-  //
-  //kitchen->setItem(knife);
-  //kitchen->setItem(Avocado);
-  //
-  //kitchen->setItem(knife);
-  //kitchen->setItem(Avocado);
-  //
-  //kitchen->setItem(knife);
-  //kitchen->setItem(Avocado);
 
-  //garage->getRoomItems();
-  //cout<<""<<endl;
-  //garage->removeItem(hammer);
-  //garage->getRoomItems();
+  //initial instructions
+cout<<"Welcome to mystery mansion, see this mysterious box here, in order to leave mystery manor, you must obtain the key that opens this box."<<endl;
+ cout<<"Obtain the key by moving about the manison using the GO command and collecting items to help you find the key!"<<endl;
+ cout<<"For help at any time type HELP and if you wish to quit the game at any time type EXIT. Good Luck!"<<endl;
 
-  
+ //gameplay
   while(loop == true){
-    cout<<"Insert instructions here"<<endl;
+    cout<<endl;
     cout<<"You are in "<<currentRoom->getRoomDescription()<<endl;
+    cout<<"Exits: "<<endl;
+    currentRoom->getExits();
+    cout<<endl;
     cout<<"Items in the room:"<<endl;
     currentRoom->getRoomItems();
 
+     if(currentRoom == outside){//checks win   
+      for(int i=0; i<inventory.size();i++){
+        if(inventory[i] == "key"){
+          loop = false;
+          cout<<"Congratualtions, you found the key to open the box and you have no escaped from Mystery Manor! Press any key to end the day"<<endl;
+          break;
+        }
+      }
+    }
+    
     string userInput;
-    cin>>userInput;
-    if(userInput == "EXIT"){
+    cin>>userInput;//takes in commands from the user
+    
+    if(userInput == "EXIT"){//if command is EXIT, quits the game
       loop = false;
     }
-    else if(userInput == "GO"){
+    else if(userInput == "GO"){//if the command is GO
       string directionInput;
       int index=0;
+      bool found=false;
       cout<<"which direction would you like to go"<<endl;
-      cin>> directionInput;
-       cout<<currentRoom->getSpecificExits(directionInput)<<endl;
-       cout<<roomList[1]->getRoomDescription()<<endl;
-      for(int i=0;i<roomList.size();i++){
+      cin>> directionInput;//takes in direction
+      for(int i=0;i<roomList.size();i++){//moves you if logically possible
 	if(roomList[i]->getRoomDescription() == currentRoom->getSpecificExits(directionInput)){
-	  cout<<roomList[i]->getRoomDescription()<<endl;
-	  cout<<currentRoom->getSpecificExits(directionInput)<<endl;
 	  index = i;
+	  found=true;
 	}
       }
-      currentRoom = roomList[index];
+      if(found == true){
+	currentRoom = roomList[index];
+      }
+      else if(found == false){
+	cout<<"there is nowhere to go in that direction"<<endl;
+      }
     }
-    else if(userInput == "INVENTORY"){
+    else if(userInput == "INVENTORY"){//if command is INVENTORY prints out inventory
       cout<<"Items in your inventory: "<<endl;
       for(int i=0;i<inventory.size();i++){
 	cout<<inventory[i]<<endl;
       }
       cout<<endl;
     }
-    else if(userInput == "DROP"){
+    else if(userInput == "DROP"){//if command is DROP 
       string dropItem;
       bool found = false;
       string droppedItem;
       cout<<"What item would you like to drop?"<<endl;
-      cin>>dropItem;
+      cin>>dropItem;//takes in item you would like to drop
       for(int i=0;i<inventory.size();i++){
-        if(inventory[i] == dropItem){
+        if(inventory[i] == dropItem){//sees if item can be dropped and drops it
 	  int index =i;
           inventory.erase(inventory.begin() +index);//erases it from the list 
 	  cout<<dropItem<<" has been removed"<<endl;
@@ -205,24 +200,38 @@ int main(){
 	  currentRoom->setItem(newItem);
 	}
       }
-      if(found == false){
+      if(found == false){//if item cannot be dropped
 	cout<<"That item is not in your inventory"<<endl;
       }
     }
-    else if(userInput =="GET"){
+    else if(userInput == "HELP"){//if command is HELP prints instrcutions
+      cout<<endl;
+      cout<<"Instructions: "<<endl;
+      cout<<"Move around the room using commands to pick up important items to win the game"<<endl;
+      cout<<"Commands: "<<endl;
+      cout<<"-GO: pair with north/south/east/west to move about the rooms"<<endl;
+      cout<<"-GET: pair with an item in a room to pick up an item"<<endl;
+      cout<<"-INVENTORY: see whats in your inventory"<<endl;
+      cout<<"-DROP: pair with an item in your inventory to drop said item"<<endl;
+      cout<<"-EXIT: to quit playing the game"<<endl;
+      cout<<"-HELP: to see this list of instructions again"<<endl;
+      cout<<endl;
+    }
+    else if(userInput =="GET"){//if command is GET
       string itemInput;
       cout<<"Which item would you like to pick up"<<endl;
-      cin>>itemInput;
+      cin>>itemInput;//takes in item you would like to get
       
-      if(currentRoom->checkForItem(itemInput) == true){
+      if(currentRoom->checkForItem(itemInput) == true){//sees if you can get it
 	currentRoom->removeItem(itemInput);
-	inventory.push_back(itemInput);
+	inventory.push_back(itemInput);//adds to inventory if you can
       }
-      else if(currentRoom->checkForItem(itemInput) == false){
+      else if(currentRoom->checkForItem(itemInput) == false){//prints if you cant
 	cout<<"This item is not in this room"<<endl;
       }
     }
-    else{
+    
+    else{//command inputted was not a valid command
       cout<<"That is an invalid command please try again"<<endl;
     }
     
