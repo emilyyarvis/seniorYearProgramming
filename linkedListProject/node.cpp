@@ -1,3 +1,4 @@
+
 #include<iostream>
 #include"node.h"
 
@@ -9,7 +10,8 @@ node::node(student* newStudent){
 }
 
 node::~node(){
-  delete &theStudent;
+  cout<<"help"<<endl;
+  delete theStudent;
   next = NULL;
   
 }
@@ -22,6 +24,13 @@ void node::setNext(node* nextNode){
 
 node* node::getNext(){
   return next;
+}
+
+void node::setPrevious(node* previousNode){
+  previous = previousNode;
+}
+node* node::getPrevious(){
+  return previous;
 }
 
 student* node::getStudent(){
