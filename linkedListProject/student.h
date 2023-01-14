@@ -4,9 +4,9 @@ using namespace std;
 class student{
 
  public:
-  student(int newId);
-  int getId();
-  void setId(int newId);
+  student(int newId);//student constructor
+  int getId();//gets the id of the student
+  void setId(int newId);//sets the id of the student
  private:
-  int id;
+  int id;//the id of the student
 };

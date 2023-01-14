@@ -10,13 +10,9 @@ node::node(student* newStudent){
 }
 
 node::~node(){
-  cout<<"help"<<endl;
   delete theStudent;
-  next = NULL;
-  
+  next = NULL; 
 }
-
-
 void node::setNext(node* nextNode){
 
   next = nextNode;
