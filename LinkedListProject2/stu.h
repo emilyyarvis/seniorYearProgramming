@@ -3,27 +3,28 @@
 #include <iostream>
 #include<cstring>
 
+using namespace std;
 
 class Student{
 
  public:
-  Student(int inputId);
+  Student(int inputId,float inputGPA,string firstName,string lastName);
   ~Student();
-  void setFirstName();
-  char getFirstName();
-  void setLastName();
-  char getLastName();
+  void setFirstName(string firstName);
+  string getFirstName();
+  void setLastName(string lastName);
+  string getLastName();
   void setId(int inputId);
   int getId();
-  void setGPA();
+  void setGPA(float inputGPA);
   float getGPA();
   
 
  private:
-  char firstName[10];
-  char lastName[10];
+  string firstName;
+  string lastName;
   int id;
-  float gpa;
+  float GPA;
 
 
 };
