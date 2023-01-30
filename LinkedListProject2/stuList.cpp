@@ -8,7 +8,6 @@ using namespace std;
 
 void add(int userId,Node* &firstNode,float userGPA,string firstName,string lastName,Node* current);
 void print(Node* firstNode);
-//void sort(Node* &firstNode);
 bool quit();
 void deleter(int deletedId,Node* &head, Node* current, Node* previous);
 float average(float avg,Node* &head,Node* current,int count);
@@ -17,8 +16,6 @@ float average(float avg,Node* &head,Node* current,int count);
 int main(){
   bool loop = true;
   string input;
-  //Student* joe = new Student(2,2.00,"Joe","Guy");
-  //Node* head = new Node(joe);
   Node* head=NULL;
   string userInput;
   string inputFirst;
@@ -43,7 +40,6 @@ int main(){
     else if(userInput == "PRINT"){
       print(head);
     }
-
     else if(userInput == "QUIT"){
       loop = quit();
     }
@@ -51,24 +47,19 @@ int main(){
       cout<<"enter the id of the person you would like to delete"<<endl;
       cin>>inputDeleteId;
       deleter(inputDeleteId,head,head,head);
-
     }
     else if(userInput == "AVERAGE"){
       average(0,head,head,0);
     }
     else{
       cout<<"This command word does not exist please try again"<<endl;
-
     }
   }
-
-
 }
 
 void add(int userId,Node* &firstNode,float userGPA,string firstName,string lastName,Node* current){
-  //Node* current = firstNode;
+
   Node*temporaryNext;
-  
   int newId;
   bool go=true;
   if(firstNode== NULL){//checks to see if the list is empty
@@ -91,7 +82,7 @@ void add(int userId,Node* &firstNode,float userGPA,string firstName,string lastN
       }
       else{
 	current = current->getNext();
-	//add(userId,firstNode,userGPA,firstName,lastName,current);
+       
       }
       
       }
@@ -105,30 +96,29 @@ void add(int userId,Node* &firstNode,float userGPA,string firstName,string lastN
 void print(Node* firstNode){//prints out all the nodes
   Node* printNode = firstNode;
   Node* temp;
-  cout<<endl;
-  while(printNode->getNext()!=NULL){
+
+  if(printNode->getNext()!=NULL){//as long as next node exists
     if(printNode->getStudent()->getId() ==0){
       printNode = printNode->getNext();
     }
-    else{
-      cout<<printNode->getStudent()->getFirstName()<<","<<printNode->getStudent()->getLastName()<<","<<printNode->getStudent()->getId()<<","<<printNode->getStudent()->getGPA()<<endl;
+    else{//print out the node information
       
-      //      cout<<printNode->getStudent()->getGPA()<<endl;
+      cout<<printNode->getStudent()->getFirstName()<<","<<printNode->getStudent()->getLastName()<<","<<printNode->getStudent()->getId()<<","<<setprecision(3)<<printNode->getStudent()->getGPA()<<endl;
       printNode = printNode->getNext();
+      print(printNode);//recursion
     }
   }
+  else{//prints the last node
     
-  cout<<printNode->getStudent()->getFirstName()<<","<<printNode->getStudent()->getLastName(\
-)<<","<<printNode->getStudent()->getId()<<","<<printNode->getStudent()->getGPA()<<endl;
+    cout<<printNode->getStudent()->getFirstName()<<","<<printNode->getStudent()->getLastName()<<","<<printNode->getStudent()->getId()<<","<<setprecision(3)<<printNode->getStudent()->getGPA()<<endl;
+  }
 }
-void deleter(int deletedId,Node* &head, Node* current, Node* previous){
+
+
+void deleter(int deletedId,Node* &head, Node* current, Node* previous){//gets a node and deletes it
   Node*foundNode;
   Node*temporaryNext;
   bool found = false;
-  //if(head->getStudent()->getId() == NULL){
-  //  cout<<"There is nothing in the list so we cannot delete anything."<<endl;
-  // }
-
   if(head!=NULL){
     if(head->getStudent()->getId() == deletedId){//checks the head node
       head= head->getNext();
@@ -136,7 +126,6 @@ void deleter(int deletedId,Node* &head, Node* current, Node* previous){
     current = previous->getNext();
     if(current->getNext() != NULL){/////////////////////////////////////////////////////////
       if(current->getStudent()->getId() == deletedId){                                    //
-	cout<<"YAYYYYY"<<current->getStudent()->getId()<<endl;                            //
 	temporaryNext = current->getNext();                                               //
 	previous->setNext(temporaryNext);                                                 //
 	current = previous->getNext();                                                    //
@@ -145,7 +134,7 @@ void deleter(int deletedId,Node* &head, Node* current, Node* previous){
       }                                                                                   //
       else{                                                                               //
 	previous = previous->getNext();                                                   //
-	deleter(deletedId, head, current, previous);                                      //
+	deleter(deletedId, head, current, previous);//recursion                           //
                                                                                           //
       }                                                                                   //
     }//^goes through everything except the first and last node//////////////////////////////
@@ -155,25 +144,25 @@ void deleter(int deletedId,Node* &head, Node* current, Node* previous){
     }
   }
 }
-bool quit(){
+bool quit(){//quits the game
   cout<<"Goodbye"<<endl;
   return false;
 }
-float average(float avg,Node* &head,Node* current,int count){
+
+float average(float avg,Node* &head,Node* current,int count){//average all the GPA's in the list
   bool done = false;
-  // if(head!=NULL){
     if(current->getNext()!=NULL){
       count = count+1;
       avg = avg+(current->getStudent()->getGPA());
       current = current->getNext();
-      return average(avg,head,current,count);
+      return average(avg,head,current,count);//recursion
     }
-    //  }
+    //does the last item in the list
     count = count +1;
   avg = avg+(current->getStudent()->getGPA());
  
   avg = avg / count;
-  cout<<"Average: "<<setprecision(3)<<avg<<endl;
+  cout<<"Average: "<<setprecision(3)<<avg<<endl;//prints to two decimals
   return avg;
 }
 
