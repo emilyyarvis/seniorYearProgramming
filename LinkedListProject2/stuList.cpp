@@ -26,7 +26,6 @@ int main(){
   while(loop == true){
     cin>>userInput;
     if(userInput == "ADD"){
-      cout<<"ADD"<<endl;
       cout<<"Whats the students first name"<<endl;
       cin>>inputFirst;
       cout<<"Whats the students last name"<<endl;
@@ -72,7 +71,7 @@ void add(int userId,Node* &firstNode,float userGPA,string firstName,string lastN
 
   }
   else{//otherwise if no special case sorts the nodes in order
-    while(current->getNext()!=NULL && go==true){
+    if(current->getNext()!=NULL && go==true){
       if(current->getNext()->getStudent()->getGPA() > userGPA){
 	temporaryNext = current->getNext();
 	current->setNext(new Node(new Student(userId,userGPA,firstName,lastName)));
@@ -82,13 +81,14 @@ void add(int userId,Node* &firstNode,float userGPA,string firstName,string lastN
       }
       else{
 	current = current->getNext();
-       
+	add(userId,firstNode,userGPA,firstName,lastName,current);
+      } 
+    }
+    else{
+      //if its the greatest GPA in the list put it last  
+      if(go!= false){ 
+	current->setNext(new Node(new Student(userId,userGPA,firstName,lastName)));
       }
-      
-      }
-  //if its the greatest GPA in the list put it last  
-    if(go!= false){ 
-      current->setNext(new Node(new Student(userId,userGPA,firstName,lastName)));
     }
   }
 }
@@ -103,7 +103,7 @@ void print(Node* firstNode){//prints out all the nodes
     }
     else{//print out the node information
       
-      cout<<printNode->getStudent()->getFirstName()<<","<<printNode->getStudent()->getLastName()<<","<<printNode->getStudent()->getId()<<","<<setprecision(3)<<printNode->getStudent()->getGPA()<<endl;
+      cout<<printNode->getStudent()->getFirstName()<<","<<printNode->getStudent()->getLastName()<<","<<printNode->getStudent()->getId()<<","<<setprecision(3)<<showpoint<<printNode->getStudent()->getGPA()<<endl;
       printNode = printNode->getNext();
       print(printNode);//recursion
     }
@@ -162,7 +162,7 @@ float average(float avg,Node* &head,Node* current,int count){//average all the G
   avg = avg+(current->getStudent()->getGPA());
  
   avg = avg / count;
-  cout<<"Average: "<<setprecision(3)<<avg<<endl;//prints to two decimals
+  cout<<"Average: "<<setprecision(3)<<showpoint<<avg<<endl;//prints to two decimals
   return avg;
 }
 
