@@ -7,13 +7,13 @@
 
 using namespace std;
 
-void rehash(int &bucketSize,Node* *ptr);
+void rehash(int &bucketSize,Node* *&ptr);
 int randomInt(int maxValue);
-void hashFunction(int userId,float userGPA,string firstName,string lastName,int bucketSize, Node* *ptr);
+void hashFunction(int userId,float userGPA,string firstName,string lastName,int &bucketSize, Node* *&ptr);
 
-void hashPrint(Node* *hash,int bucketSize);
+void hashPrint(Node* *&hash,int &bucketSize);
 bool quit();
-void hashDelete(int deletedId,Node* hash[],int bucketSize);
+void hashDelete(int deletedId,Node* *&hash,int bucketSize);
 
 
 int main(){
@@ -50,7 +50,7 @@ int main(){
 
     getline(fileInput,line);
     //cout<<"Name: "<<line<<endl;
-    firstName.push_back(line);
+    firstName.push_back(line);//puts all first names into vector
       }
   fileInput.close();
   filename = "lastNames.txt";
@@ -59,17 +59,14 @@ int main(){
   if(!fileInput.is_open()){
     cout<<"NO"<<endl;
   }
-  while(fileInput){
+  while(fileInput){//puts all last names into vector
     string line;
     
     getline(fileInput,line);
     //cout<<"N: "<<line<<endl;
     lastName.push_back(line);
   }
-  for(int i=0; i<firstName.size();i++){
-    cout<<firstName[i]<<","<<lastName[i]<<endl;
-
-  }
+ 
   //////////////////////////////////////////
 
 
@@ -93,7 +90,7 @@ int main(){
       cout<<"Do you want to add a student manually or randomly"<<endl;
       cout<<"Type MANUAL or RANDOM"<<endl;
       cin>>userInput2;
-      if(userInput2 == "MANUAL"){
+      if(userInput2 == "MANUAL"){//for manual additions
 	
 	cout<<"Whats the students first name"<<endl;
 	cin>>inputFirst;
@@ -105,7 +102,7 @@ int main(){
 	cin>>inputGPA;
 	hashFunction(inputId,inputGPA,inputFirst,inputLast,bucketSize,ptr);
       }
-      else if(userInput2 == "RANDOM"){
+      else if(userInput2 == "RANDOM"){//for random additions
 	cout<<"How many students would you like to randomly add"<<endl;
 	int students;
 	cin>>students;
@@ -113,21 +110,24 @@ int main(){
 	  firstNameIndex=0;
 	  lastNameIndex=0;
 	  randomGpa=0;
-	  // srand(time(NULL));
+	  // sets random GPA
 	  float randomNumber = (float)randomInt(4);
 	  randomGpa = (float)(rand()) / (float)(RAND_MAX);
 	  randomGpa = randomGpa+randomNumber;
 	  if(randomGpa <1){
 	    randomGpa = randomGpa+1;
 	  } 
-	  currentId = currentId+1;
-	  firstNameIndex = randomInt(20);
-	  lastNameIndex = randomInt(20);;
+	  currentId = currentId+1;//sets id
+	  firstNameIndex = randomInt(20);//sets random first name
+	  lastNameIndex = randomInt(20);;//sets random last name
 	  hashFunction(currentId,randomGpa,firstName[firstNameIndex],lastName[lastNameIndex],bucketSize,ptr);
 	}
       }
     }
     else if(userInput == "PRINT"){
+      // cout<<bucketSize<<endl;
+      // cout<<ptr[45]->getStudent(
+     
       hashPrint(ptr,bucketSize);
     }
     else if(userInput == "QUIT"){
@@ -136,7 +136,7 @@ int main(){
     else if(userInput == "DELETE"){
       cout<<"enter the id of the person you would like to delete"<<endl;
       cin>>inputDeleteId;
-      hashDelete(inputDeleteId,hash,bucketSize);
+      hashDelete(inputDeleteId,ptr,bucketSize);
     }
     else{
       cout<<"This command word does not exist please try again"<<endl;
@@ -145,7 +145,7 @@ int main(){
 }
 /////////////////////////////////////////////////////////////////////////////
 
-void hashFunction(int userId,float userGPA,string firstName,string lastName,int bucketSize, Node* *hash){
+void hashFunction(int userId,float userGPA,string firstName,string lastName,int &bucketSize, Node* *&hash){//adds to the hash table by ID number
   int value=0;
   Node* head = NULL;
   Node* current= NULL;
@@ -167,76 +167,83 @@ void hashFunction(int userId,float userGPA,string firstName,string lastName,int 
     if(count >= 2){
       current->setNext(new Node(new Student(userId,userGPA,firstName,lastName)));
       cout<<"hello"<<endl;
-      rehash(bucketSize,hash);
+      rehash(bucketSize,hash);//once there are 3 or more links we rehash
     }
     else{
       current->setNext(new Node(new Student(userId,userGPA,firstName,lastName)));
       current = current->getNext();
       // cout<<current->getStudent()->getFirstName()<<endl;
-    }
-    
+    } 
   }
-
 }
-void rehash(int &bucketSize,Node* *ptr){
+void rehash(int &bucketSize,Node* *&ptr){
   vector<Node*> temp;
   int counter=0;
   Node* current=NULL;
- 
-  for(int i=0;i<bucketSize;i++){
+  cout<<"one"<<endl;
+  for(int i=0;i<bucketSize;i++){//puts all items from original array into vetcor temp
     if(ptr[i] != NULL){
       current = ptr[i];
-
       while(current->getNext()!=NULL){
 	temp.push_back(current);
 	current = current->getNext();
-	
       }
-      
       temp.push_back(current);
       counter=counter+1;
     }
   }
+  //for(int i=0; i<temp.size();i++){//debugging
+  //  cout<<i<<":"<<temp[i]->getStudent()->getId()<<endl;
+  // }
   
-  cout<<bucketSize<<endl;
-  bucketSize=bucketSize*2;
-  cout<<"debug: "<<ptr[1]->getStudent()->getId()<<endl;
-  Node* newHash[bucketSize];
-  for(int i=0;i<bucketSize;i++){
+  bucketSize=bucketSize*2;//increases bucketsize
+  Node* newHash[bucketSize];//creates new array
+  for(int i=0;i<bucketSize;i++){//initiallizes new array to be empty
     newHash[i] = NULL;
   }
-
-
+  ptr=newHash;//sets pointer equal to new hash
+  for(int i=0;i<bucketSize;i++){
+    ptr[i] = NULL;
+  }
+  int position=0;
   
-  cout<<bucketSize<<endl;
-  cout<<"initial size: "<<sizeof(ptr)<<endl;
-  ptr=newHash;
-  cout<<"initial size: "<<sizeof(ptr)<<endl;
-  cout<<"debug: "<<ptr[1]->getStudent()->getId()<<endl;
+  for(int i=0; i<temp.size();i++){//adds everything back into the new hash table
+    position = (temp[i]->getStudent()->getId())%bucketSize;
+    cout<<i<<","<<position<<endl;
+    ptr[position]=temp[i];
+    
+  }
 }
-int randomInt(int maxValue){
+int randomInt(int maxValue){//creates a random integer
   //srand(time(NULL));
   int randomNumber = (rand()%maxValue);
   return randomNumber;
 }
-void hashPrint(Node* *hash,int bucketSize){
-  int count = 0;
-  Node* current= NULL;
-  for(int i=0;i<bucketSize;i++){
-    if(hash[i]!=NULL){
-      current = hash[i];
-      
-      while(current->getNext()!=NULL){
-	cout<<i<<","<<current->getStudent()->getId()<<", "<<current->getStudent()->getFirstName()<<","<<current->getStudent()->getLastName()<<", "<<current->getStudent()->getGPA()<<endl;
-	current = current->getNext();
-      }
-      cout<<i<<","<<current->getStudent()->getId()<<", "<<current->getStudent \
-()->getFirstName()<<","<<current->getStudent()->getLastName()<<", "<<current->getStudent()->getGPA()<<endl;
-    }
+
+ 
+void hashPrint(Node* *&hash,int &bucketSize){//prints everything
+  cout<<"Bucket: "<<bucketSize<<endl;
+  if(hash[45]!=NULL){//debugging
+    cout<<"wow"<<endl;
+  }
+  else{
+    cout<<"huh"<<endl;
   }
 
+  
+  
+  for(int i=0;i<bucketSize;i++){
+    cout<<i<<endl;
+    if(hash[i]!=NULL){
+      cout<<i<<","<<hash[i]->getStudent()->getId()<<endl;
+    }
+    // else{
+    //  cout<<i<<",cool"<<endl;
+    // }
+  }
+  
 }
-void hashDelete(int deletedId,Node* hash[],int bucketSize){
+void hashDelete(int deletedId,Node* *&hash,int bucketSize){
 
   int value = 0;
   value = deletedId % bucketSize;
@@ -272,3 +279,4 @@ bool quit(){//quits the game
 
 
  
+
