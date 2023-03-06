@@ -5,12 +5,15 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cmath>
 
 using namespace std;
 
 void outputHeap(int heap[],Node* &head,int length);
 int findSize(int arr[]);
-void sort(int heap[],int length,int (&realHeap)[100]);
+void sort(int heap[],int length,int (&newHeap)[100]);
+void printMaxHeap(int heap[], int trueLength, int index, int level);
 
 int main(){
   int inputLength=0;
@@ -21,14 +24,17 @@ int main(){
   for(int i=0;i<100;i++){
     inputArray[i]=-1;
   }
-  int position=1;
+  int position=0;
+
+  cout<<"say ADD to add values, output to print to command line in tree, CLEAR to clear items, and QUIT to quit program"<<endl;
   while(loop == true){
+    
     cin>>input;
-    if(input=="ADD"){
+    if(input=="ADD"){//add to heap
       cout<<"Would you like to manually input your numbers or input a file"<<endl;
       cout<<"MANUAL or FILE"<<endl;
       cin>>input;
-      if(input == "FILE"){
+      if(input == "FILE"){//file additions
 	cout<<"What is the name of your file? do NOT include .txt in your answer"<<endl;
 	cin>>input;
 	input=input+".txt";
@@ -46,13 +52,13 @@ int main(){
 	  if(line !="\0"&&line!=" "){
 	    int num = stoi(line);
 	   
-	    inputArray[position]=num;
+	    inputArray[position]=num;//adds everything from file to array
 	    position=position+1;
 	  }
 	}
 	fileInput.close();
       }
-      else if (input == "MANUAL"){
+      else if (input == "MANUAL"){//manual additions
 	cout<<"RANDOM or MANUAL"<<endl;
 	cin>>input;
 	if(input=="MANUAL"){
@@ -68,7 +74,7 @@ int main(){
 	    
 	  }
 	}
-	else if(input=="RANDOM"){\
+	else if(input=="RANDOM"){//adds random numbers
 	  int newValues;
 	  cout<<"How many values would you like to randomly add"<<endl;
 	  int random;
@@ -84,82 +90,89 @@ int main(){
 	}
       }
     }
-    else if(input =="PRINT"){
+    else if(input =="PRINT"){//prints all numbers in heap
       for(int i=0;i<100;i++){
 	if(inputArray[i]!=-1){
 	  cout<<i<<","<<inputArray[i]<<endl;
 	}
       }
     }
-    else if(input=="CLEAR"){
+    else if(input=="CLEAR"){//deletes all numbers from heap
       for(int i=0;i<100;i++){
           inputArray[i]=-1;
 	}
-      position = 1;
+      position = 0;
     }
-    else if(input=="OUTPUT"){
-      outputHeap(inputArray,head,inputLength);
+    else if(input=="OUTPUT"){//outputs numbers to the tree in command line
+      
+      sort(inputArray,inputLength,inputArray);
+      int trueLength = sizeof(inputArray) / sizeof(inputArray[0]);
+      printMaxHeap(inputArray, trueLength, 0, 0);
     }
-    else if(input=="SORT"){
+    else if(input=="SORT"){//puts heap in order
       sort(inputArray,inputLength,inputArray);
     }
-    else if(input=="QUIT"){
+    else if(input=="QUIT"){//quits program
       loop=false;
     }
     else{
       cout<<"this command does not exist please try again"<<endl;
     }
-    inputLength=findSize(inputArray);
+    inputLength=findSize(inputArray);//resizes the length based on input
    
   }
 
 
 }
-void sort(int heap[],int length,int (&realHeap)[100]){
+void sort(int heap[],int length,int (&newHeap)[100]){//sorts the array big to smal
 
-  int realLength=length+1;
+  int realLength=length;
   int largest=0;
-  int count=1;
+  int count=0;
   int temp[length];
   int pos=0;
   
-  while(count<realLength){
-    for(int i=1;i<realLength;i++){
-      if(heap[i]>largest){
+  
+  while(count<realLength){//while we still need to go through numbers in array
+    for(int i=0;i<realLength;i++){//for them all
+      if(heap[i]>largest){//if somethings bigger then the largest found switch em
 	largest=heap[i];
 	pos=i;
       }
     }
-    heap[pos]=0;
-    temp[count]=largest;
+    heap[pos]=0;//delte from old array
+    temp[count]=largest;//add to new array
     largest=0;
     count=count+1;
-    
+    //sort again fro next largest until out of numbers
   }
-  for(int i=1;i<realLength;i++){
-    realHeap[i]=temp[i];
+  for(int i=0;i<realLength;i++){//reassign to array
+    newHeap[i]=temp[i];
 
   }
   cout<<"SORTED"<<endl;
-}
-
-void outputHeap(int heap[],Node* &head,int length){
-  int largest=0;
-  int pos;
-  int parent=0;
-  //Node* head;
-  for(int i=0;i<length;i++){
-    if(i==1){
-      head=new Node(new Student(heap[i]));
-    }
-    else if(i!=1){
-      
-    }
-  }
-
   
 }
-int findSize(int arr[]){
+
+
+///
+
+void printMaxHeap(int heap[], int trueLength, int index, int level) {
+  if (index >= trueLength){//if there is nothing in the array passed
+        return;
+  }
+  printMaxHeap(heap, trueLength, 2 * index + 2, level + 1);//prints teh right side of the tree
+    for (int i = 0; i < level; i++){
+      cout << " ";//prints teh correct number of spaces for the given node based on its level
+    }
+    cout << heap[index] << endl;//prints the current node
+    printMaxHeap(heap, trueLength, 2 * index + 1, level + 1);//prints the left side of the tree
+}
+
+///
+
+
+int findSize(int arr[]){//finds the true size of the array/the number of entered elements
   int count=0;
   for(int i=0;i<100;i++){
     if(arr[i]!=-1){

@@ -10,12 +10,13 @@ Node::Node(Student* newStudent){
   right = NULL;
 }
 
-Node::Node(){
+Node::~Node(){
   delete student;
-  next =NULL;
+  left =NULL;
+  right = NULL;
 }
 
-Student Node::getStudent(){
+Student* Node::getStudent(){
   return student;
 }
 
@@ -26,10 +27,10 @@ void Node::setLeft(Node* node){
   left=node;
 }
 
-Node Node::getLeft(){
+Node* Node::getLeft(){
   return left;
 }
-Node Node::getRight(){
+Node* Node::getRight(){
   return right;
 }
 

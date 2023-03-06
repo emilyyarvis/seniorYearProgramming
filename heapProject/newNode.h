@@ -10,8 +10,8 @@
    Student * getStudent();
    void setRight(Node* node);
    void setLeft(Node* node);
-   Node * getRight();
    Node* getLeft();
+   Node* getRight();
    
  private:
    Student* student;
