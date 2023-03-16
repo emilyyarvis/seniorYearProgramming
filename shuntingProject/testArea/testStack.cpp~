@@ -1,0 +1,82 @@
+#include <iostream>
+#include <stack>
+
+
+
+using namespace std;
+
+void checkOperator(char input[],int length,int &operatorCount);
+bool checkOperandIndividual(int index, char input[]);
+bool checkOperatorIndividual(int index, char input[]);
+
+int main(){
+ //initializes variables
+  int n = 80;//max charecters that can be checked
+  char initialStr[n];
+  int count = 0;
+  int length = 0;
+  int trueLength = 0;
+  int track =0;
+  int operatorCount=0;
+  
+  //gets the input from the user
+  cout << "type in a word"<<endl;
+  cin.get(initialStr,n);//calls initialStr this inputted value
+  cin.get();
+  
+  
+   for(int i =0; i<n; i++){
+     if(initialStr[i] == '\0'){//finds the real length of the char string
+       cout<<"found"<<endl;
+       length = i;//sets it as length
+       break;
+     } 
+    }
+
+   cout<<initialStr<<endl;
+   checkOperator(initialStr,length,operatorCount);
+   cout<<"Operator: "<<operatorCount<<endl;
+   if(checkOperatorIndividual(5,initialStr)==true){
+     cout<<"Wow"<<endl;
+   }
+   if(checkOperandIndividual(1,initialStr)==true){
+     cout<<"WoWo"<<endl;
+   }
+ }
+
+void checkOperator(char input[],int length,int &operatorCount){
+  for(int i=0;i<length;i++){
+    if(input[i] =='*'||input[i]=='-'||input[i]=='+'||input[i]=='/'||input[i]=='^'){
+      operatorCount++;
+    }
+  }
+  
+}
+bool checkOperatorIndividual(int index, char input[]){
+  if(input[index] =='*'||input[index]=='-'||input[index]=='+'||input[index]=='/'||input[index]=='^'){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+bool checkOperandIndividual(int index, char input[]){
+  if((input[index] !='*'&&input[index]!='-'&&input[index]!='+'&&input[index]!='/'&&input[index]!='^')&& input[index]!=' '){
+    return true;
+  }
+  else{
+    return false;
+  }
+  
+}
+
+bool checkSpace(int index,char input[]){
+  if(input[index] ==' '){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+

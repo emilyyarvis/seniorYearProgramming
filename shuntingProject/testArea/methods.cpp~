@@ -1,0 +1,77 @@
+#include <iostream>
+#include<stack>
+#include "newNode.h"
+
+using namespace std;
+
+void checkOperator(char input[],int length,int &operatorCount){
+  for(int i=0;i<length;i++){
+    if(input[i] =='*'||input[i]=='-'||input[i]=='+'||input[i]=='/'||input[i]=='^'){
+      operatorCount++;
+    }
+  }
+  
+}
+bool checkOperatorIndividual(int index, char input[]){
+  if(input[index] =='*'||input[index]=='-'||input[index]=='+'||input[index]=='/'||input[index]=='^'||input[index]==')'||input[index]=='('){
+  return true;
+}
+ else{
+   return false;
+ }
+}
+
+bool checkOperandIndividual(int index, char input[]){
+  if((input[index] !='*'&&input[index]!='-'&&input[index]!='+'&&input[index]!='/'&&input[index]!='^')&&input[index]!=' '){
+    return true;
+  }
+  else{
+    return false;
+  }
+  
+}
+bool checkSpace(int index,char input[]){
+  if(input[index] ==' '){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+void buildStack(char input[]){
+
+
+}
+
+void buildQueue(char input[]){
+
+
+}
+void buildLinkedList(char input[],int length,Node* &head){
+  Node* current=NULL;
+  //  current = head;                                                                                                
+  int LLCount=0;
+  for (int i=0;i<length;i++){
+       if(checkSpace(i,input)!=true){
+      LLCount++;
+           if(head==NULL){
+        head= new Node(new Student(input[i]));
+      }
+      else{
+        current = head;
+        while(current->getNext()!=NULL){
+          current = current->getNext();
+        }
+        current->setNext(new Node(new Student(input[i])));
+      }
+    }
+  }
+  //print                                                                                                            
+  current=head;
+  cout<<endl;
+  for (int i=0;i<LLCount;i++){
+    cout<<current->getStudent()->getValue()<<endl;
+    current=current->getNext();
+ }
+}
