@@ -7,7 +7,10 @@
    Tree(Child* inputRoot);
    ~Tree();
    Child * getChild();
-  
+   Tree* getRight();
+   Tree* getLeft();
+   void setRight(Tree* rightInput);
+   void setLeft(Tree* leftInput);
    
  private:
    Child* root;

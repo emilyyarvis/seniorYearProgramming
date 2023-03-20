@@ -41,7 +41,7 @@ int main(){
        break;
      } 
     }
-   trueLength = (length-spaceCount)-1;
+   trueLength = (length-spaceCount);
    readInfix(initialStr,length,trueLength);
    //buildLinkedList(initialStr,length,LLHead);
 }

@@ -20,3 +20,22 @@ Child* Tree::getChild(){
   return root;
 
 }
+
+
+Tree* Tree::getRight(){
+  return right;
+}
+
+Tree* Tree::getLeft(){
+  return left;
+}
+
+void Tree::setRight(Tree* rightInput){
+  right = rightInput;
+
+}
+
+void Tree::setLeft(Tree* leftInput){
+  left=leftInput;
+  
+}
