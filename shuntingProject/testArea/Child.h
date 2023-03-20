@@ -12,8 +12,8 @@ class Child{
   Child(char inputValue);//constructor
   ~Child();//destructor
   
-  void setRoot(char inputValue);//sets the id of the student
-  char getRoot();//gets the id of the student
+  void setRoot(char inputValue);//sets the root/char of tree
+  char getRoot();//sets the root/char of tree
     
 
  private:
