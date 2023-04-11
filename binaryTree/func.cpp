@@ -47,34 +47,65 @@ void printTree(vector<int>sorted,int trueLength,int index, int level){
     cout << sorted[index] << endl;//prints the current node
     printTree(sorted, trueLength, 2 * index + 1, level + 1);//prints the left side of the tree
 }
+void printTree2(Tree* head,Tree* &current,int level){
 
-void buildTree(queue<int> input,Tree* head,Tree* &current){
+  cout<<"root: "<<head->getChild()->getRoot()<<endl;
+  cout<<"Right: "<<head->getRight()->getChild()->getRoot()<<endl;
+  cout<<"Left: "<<head->getLeft()->getChild()->getRoot()<<endl;
 
+  
+}
+
+void buildTree(queue<int> input,Tree* &head,Tree* current){
+  
   while(head==NULL){
     head = new Tree(new Child(input.front()));
     input.pop();
+    cout<<"WHOOP: "<<head->getChild()->getRoot()<<endl;
     current = head;
   }
-  if(current->getChild()->getRoot() > (input.front())){
+  // if(input.empty()!=1){
+  // cout<<"Current is not NULL: "<<input.front()<<endl;
+  // cout<<"Current: "<<current->getChild()->getRoot()<<endl;
+  // }
+  if(current->getChild()->getRoot() < (input.front())&&input.empty()!=1){
+    cout<<"1"<<endl;
     while(current->getRight() != NULL){
+      cout<<"2"<<endl;
       current = current->getRight();
-      buildTree(input,head,current);
+      return buildTree(input,head,current);
     }
+    cout<<"3"<<endl;
     current->setRight(new Tree(new Child(input.front())));
     input.pop();
-		      
-
+    if(input.empty()==1){
+     cout<<"empty"<<endl;
+    
+    }
+    else{
+     return buildTree(input,head,head);
+      }
+    cout<<"4"<<endl;
   }
-
-    else if(current->getChild()->getRoot() < (input.front())){
-    while(head->getLeft() != NULL){
+  else if(current->getChild()->getRoot() > (input.front())&&input.empty()!=1){
+    while(current->getLeft() != NULL){
       current = current->getLeft();
-      buildTree(input,head,current);
+      return buildTree(input,head,current);
     }
-    current->setRight(new Tree(new Child(input.front())));
+    cout<<"8"<<endl;
+    current->setLeft(new Tree(new Child(input.front())));
     input.pop();
-
-
-  }
-  cout<<"it is done"<<endl;
+    if(input.empty()==1){
+      cout<<"empty"<<endl;
+    }
+    else{
+     return buildTree(input,head,head);
+       }
+    }
+  // else if(input.empty()==1){
+      cout<<"it is done"<<endl;
+     
+  
 }
+
+  

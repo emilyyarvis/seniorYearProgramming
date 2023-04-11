@@ -9,15 +9,15 @@ using namespace std;
 class Child{
 
  public:
-  Child(char inputValue);//constructor
+  Child(int inputValue);//constructor
   ~Child();//destructor
   
-  void setRoot(char inputValue);//sets the root/char of tree
-  char getRoot();//sets the root/char of tree
+  void setRoot(int inputValue);//sets the root/char of tree
+  int  getRoot();//sets the root/char of tree
     
 
  private:
-  char value;//trees root value
+  int value;//trees root value
   
 
 

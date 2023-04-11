@@ -65,7 +65,10 @@ cin>>input;
 
     }
     else if(input=="BUILD"){
+      cout<<inputQueue.front()<<endl;
       buildTree(inputQueue, head, head);
+      cout<<head->getChild()->getRoot()<<endl;
+      printTree2(head,head,0);
     }
     else if(input == "QUIT"){
       loop = false;

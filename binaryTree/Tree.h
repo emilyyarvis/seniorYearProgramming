@@ -1,6 +1,6 @@
 #include <iostream>
  #include <cstring>
- #include "Child.h"
+ #include "child.h"
 
  class Tree {
  public:

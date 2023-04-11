@@ -1,10 +1,10 @@
 #include <iostream>
-#include "child.h"
+#include "Child.h"
 #include <cstring>
 
 using namespace std;
 
-Child::Child(int inputValue){
+Child::Child(char inputValue){
   value = inputValue;
 }
 
@@ -12,12 +12,12 @@ Child::~Child(){
 
 }
 
-void Child::setRoot(int inputValue){
+void Child::setRoot(char inputValue){
   value = inputValue;
 
 }
 
-int Child::getRoot(){
+char Child::getRoot(){
   return value;
 
 }
