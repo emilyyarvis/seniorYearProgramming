@@ -47,16 +47,58 @@ void printTree(vector<int>sorted,int trueLength,int index, int level){
     cout << sorted[index] << endl;//prints the current node
     printTree(sorted, trueLength, 2 * index + 1, level + 1);//prints the left side of the tree
 }
-void printTree2(Tree* head,Tree* &current,int level){
+void printTree2(Tree* root,int space){
 
-  cout<<"root: "<<head->getChild()->getRoot()<<endl;
-  cout<<"Right: "<<head->getRight()->getChild()->getRoot()<<endl;
-  cout<<"Left: "<<head->getLeft()->getChild()->getRoot()<<endl;
+  int COUNT = 5;  
+
+    // Base case
+  if (root == NULL){
+        return;
+  }
+    // Increase distance between levels
+    space += COUNT;
+ 
+    // Process right child first
+    printTree2(root->getRight(), space);
+ 
+    // Print current node after space
+    // count
+    cout << endl;
+    for (int i = COUNT; i < space; i++){
+        cout << " ";
+    }
+    cout << root->getChild()->getRoot() << "\n";
+ 
+    // Process left child
+    printTree2(root->getLeft(), space);
 
   
 }
+bool searchTree(Tree* head, Tree* current, int input){
+  bool check1;
+  bool check2;
+  
+  if (current == NULL){
+    return false;
+  }
+  if (current->getChild()->getRoot() == input){
+    return true;
+  }
+ 
+  check1 = searchTree(head,current->getLeft(), input);
+ 
+  if(check1){
+    return true;
+  }
+ 
+  check2 = searchTree(head,current->getRight(), input);
+  
+  return check2;
+    
+    
 
-void buildTree(queue<int> input,Tree* &head,Tree* current){
+}
+void buildTree(queue<int> &input,Tree* &head,Tree* current){
   
   while(head==NULL){
     head = new Tree(new Child(input.front()));
@@ -68,7 +110,7 @@ void buildTree(queue<int> input,Tree* &head,Tree* current){
   // cout<<"Current is not NULL: "<<input.front()<<endl;
   // cout<<"Current: "<<current->getChild()->getRoot()<<endl;
   // }
-  if(current->getChild()->getRoot() < (input.front())&&input.empty()!=1){
+  if(current->getChild()->getRoot() <= (input.front())&&input.empty()!=1){
     cout<<"1"<<endl;
     while(current->getRight() != NULL){
       cout<<"2"<<endl;

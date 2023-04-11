@@ -49,12 +49,32 @@ cin>>input;
 	}
 	fileInput.close();
       }
+      else if(input == "MANUAL"){
+	int input2;
+	cout<<"Which number owuld you like to add?"<<endl;
+	cin>>input2;
+	inputVector.push_back(input2);
+	inputQueue.push(input2);
+	position = position+1;
 
+      }
     }
   
     else if(input == "PRINT"){
       for(int i=0; i<position;i++){
 	cout<<inputVector[i]<<endl;
+      }
+    }
+    else if(input == "SEARCH"){
+      int inputNew;
+      cout<<"What number would you like to look for"<<endl;
+      cin>>inputNew;
+      bool input = searchTree(head,head,inputNew);
+      if(input == true){
+	cout<<"That value is in the Tree!"<<endl;
+      }
+      else if(input == false){
+	cout<<"That value is not in the Tree!"<<endl;
       }
     }
     else if(input== "TREE"){
@@ -65,10 +85,14 @@ cin>>input;
 
     }
     else if(input=="BUILD"){
-      cout<<inputQueue.front()<<endl;
+      
       buildTree(inputQueue, head, head);
-      cout<<head->getChild()->getRoot()<<endl;
-      printTree2(head,head,0);
+      for(int i=0; i<position;i++){
+        inputVector.pop_back();
+       }
+      position = 0;
+      // inputVector.clear();
+      printTree2(head,0);
     }
     else if(input == "QUIT"){
       loop = false;
