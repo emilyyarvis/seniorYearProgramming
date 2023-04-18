@@ -49,7 +49,7 @@ void printTree(vector<int>sorted,int trueLength,int index, int level){
 }
 void printTree2(Tree* root,int space){
 
-  int COUNT = 5;  
+  int COUNT = 2;  
 
     // Base case
   if (root == NULL){
@@ -75,67 +75,153 @@ void printTree2(Tree* root,int space){
   
 }
 bool searchTree(Tree* head, Tree* current, int input){
-  bool check1;
-  bool check2;
+  bool check1=false;
+  bool check2=false;
   
   if (current == NULL){
     return false;
   }
   if (current->getChild()->getRoot() == input){
+    cout<<"This3: " <<current->getChild()->getRoot()<<endl;
     return true;
   }
  
   check1 = searchTree(head,current->getLeft(), input);
+
  
   if(check1){
+    cout<<"This2: " <<current->getChild()->getRoot()<<endl;
     return true;
   }
  
   check2 = searchTree(head,current->getRight(), input);
-  
+  cout<<"This1: " <<current->getChild()->getRoot()<<endl;  
   return check2;
-    
-    
 
 }
-void buildTree(queue<int> &input,Tree* &head,Tree* current){
+void deleteNode(Tree* &dNode,Tree* head){
+  Tree* temp;
+  Tree* extraChild;
+  Tree* newTree;
+  Tree* c;
+  Tree* temp2;
+  if(dNode->getRight() == NULL&& dNode->getLeft() ==NULL){
+    cout<<"No children"<<endl;
+    temp = dNode->getParent();
+    if(temp->getRight() == dNode){
+      temp->setRight(NULL);
+    }
+    else if(temp->getLeft() == dNode){
+      temp->setLeft(NULL);
+    }
   
+  }
+  else if(dNode->getRight()!= NULL && dNode->getLeft()!=NULL){
+    cout<<"Two Children"<<endl;
+    c = dNode->getRight();
+    while(c->getLeft()!=NULL){
+      c = c->getLeft();
+    }
+    newTree->getChild()->setRoot(c->getChild()->getRoot());
+    //delete c
+    temp2 = c->getParent();
+    if(temp2->getRight() == dNode){
+      temp2->setRight(NULL);
+    }
+    else if(temp2->getLeft() == dNode){
+      temp2->setLeft(NULL);
+    }
+    //
+    temp = dNode->getParent();
+    if(temp->getRight() == dNode){
+      temp->setRight(newTree);
+      newTree->setLeft(dNode->getLeft());
+      newTree->setRight(dNode->getRight());
+    }
+    else if(temp->getLeft() == dNode){
+      temp->setLeft(newTree);
+      newTree->setLeft(dNode->getLeft());
+      newTree->setRight(dNode->getRight());
+    }
+
+    
+  }
+  else if((dNode->getRight()!= NULL && dNode->getLeft()==NULL) || (dNode->getRight()==NULL && dNode->getLeft()!=NULL)){
+    cout<<"One Child"<<endl;
+    if(dNode->getRight()!=NULL){
+      extraChild = dNode->getRight();
+    }
+    else if(dNode->getLeft()!=NULL){
+      extraChild = dNode->getLeft();
+    }
+    temp = dNode->getParent();
+    if(temp->getRight() == dNode){
+      temp->setRight(extraChild);
+    }
+    else if(temp->getLeft() == dNode){
+      temp->setLeft(extraChild);
+    }
+  }
+  
+  
+}
+
+Tree* findNode(Tree* node, Tree* current, int value){
+  if(node == NULL){//returns NULL if head node doesnt exist
+    return node;
+  }
+  if(current->getChild()->getRoot() == value){
+    cout<<"found"<<endl;
+    return current;
+  }
+  else if(current->getChild()->getRoot() <=value){
+    cout<<"Whoop 1"<<endl;
+    current = current->getRight();
+    return findNode(node, current,value);
+  }
+  else if(current->getChild()->getRoot() >value){
+    cout<<"Whoop 2"<<endl;
+    current = current->getLeft();
+    return findNode(node,current,value);
+  }
+  return findNode(node,current,value);
+}
+
+
+void buildTree(queue<int> &input,Tree* &head,Tree* current){
+  Tree* temp;
   while(head==NULL){
     head = new Tree(new Child(input.front()));
     input.pop();
     cout<<"WHOOP: "<<head->getChild()->getRoot()<<endl;
     current = head;
   }
-  // if(input.empty()!=1){
-  // cout<<"Current is not NULL: "<<input.front()<<endl;
-  // cout<<"Current: "<<current->getChild()->getRoot()<<endl;
-  // }
+
   if(current->getChild()->getRoot() <= (input.front())&&input.empty()!=1){
-    cout<<"1"<<endl;
     while(current->getRight() != NULL){
-      cout<<"2"<<endl;
+      
       current = current->getRight();
       return buildTree(input,head,current);
     }
-    cout<<"3"<<endl;
     current->setRight(new Tree(new Child(input.front())));
+    temp = current->getRight();
+    temp->setParent(current);
     input.pop();
     if(input.empty()==1){
      cout<<"empty"<<endl;
-    
     }
     else{
      return buildTree(input,head,head);
       }
-    cout<<"4"<<endl;
   }
   else if(current->getChild()->getRoot() > (input.front())&&input.empty()!=1){
     while(current->getLeft() != NULL){
       current = current->getLeft();
       return buildTree(input,head,current);
     }
-    cout<<"8"<<endl;
     current->setLeft(new Tree(new Child(input.front())));
+    temp = current->getLeft();
+    temp->setParent(current);
     input.pop();
     if(input.empty()==1){
       cout<<"empty"<<endl;
@@ -144,10 +230,7 @@ void buildTree(queue<int> &input,Tree* &head,Tree* current){
      return buildTree(input,head,head);
        }
     }
-  // else if(input.empty()==1){
       cout<<"it is done"<<endl;
-     
-  
 }
 
   

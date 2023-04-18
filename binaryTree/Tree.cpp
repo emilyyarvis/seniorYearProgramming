@@ -8,6 +8,7 @@ Tree::Tree(Child* inputRoot){
   root= inputRoot;
   left=NULL;
   right = NULL;
+  parent = NULL;
 }
 
 Tree::~Tree(){
@@ -38,4 +39,12 @@ void Tree::setRight(Tree* rightInput){
 void Tree::setLeft(Tree* leftInput){
   left=leftInput;
   
+}
+Tree* Tree:: getParent(){
+  return parent;
+}
+
+void Tree::setParent(Tree* inputParent){
+
+  parent = inputParent;
 }

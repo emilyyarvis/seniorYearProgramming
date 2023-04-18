@@ -60,10 +60,18 @@ cin>>input;
       }
     }
   
-    else if(input == "PRINT"){
-      for(int i=0; i<position;i++){
-	cout<<inputVector[i]<<endl;
-      }
+    
+    else if(input == "DELETE"){
+      //case 1 is when it is just a leaf and doesnt have any children attatched to it
+      //case 2 is node to be deleted only has one child
+      //case 3 is node to be deleted has 2 children
+      int value;
+      cout<<"What number would you like to delete"<<endl;
+      cin>>value;
+      Tree* test =  findNode(head,head,value);
+      cout<<test->getChild()->getRoot()<<endl;
+      deleteNode(test,head);
+      
     }
     else if(input == "SEARCH"){
       int inputNew;
@@ -84,14 +92,14 @@ cin>>input;
       sort(inputVector,position);
 
     }
-    else if(input=="BUILD"){
+    else if(input=="PRINT"){
       
       buildTree(inputQueue, head, head);
       for(int i=0; i<position;i++){
         inputVector.pop_back();
        }
       position = 0;
-      // inputVector.clear();
+      
       printTree2(head,0);
     }
     else if(input == "QUIT"){
