@@ -199,7 +199,7 @@ void deleteNode(Tree* &dNode,Tree* &head){
   
 }
 
-Tree* findNode(Tree* node, Tree* current, int value){
+Tree* findNode(Tree* node, Tree* current, int value){//gos through whole tree and searches for node given
   if(node == NULL){//returns NULL if head node doesnt exist
     return node;
   }
@@ -208,12 +208,10 @@ Tree* findNode(Tree* node, Tree* current, int value){
     return current;
   }
   else if(current->getChild()->getRoot() <=value){
-    cout<<"Whoop 1"<<endl;
     current = current->getRight();
     return findNode(node, current,value);
   }
   else if(current->getChild()->getRoot() >value){
-    cout<<"Whoop 2"<<endl;
     current = current->getLeft();
     return findNode(node,current,value);
   }
