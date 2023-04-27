@@ -111,11 +111,14 @@ void deleteNode(Tree* &dNode,Tree* &head){
     cout<<"No children"<<endl;
     temp = dNode->getParent();
     if(temp->getRight() == dNode){
-      temp->setRight(NULL);
+      temp->setRight(NULL);//deletes right nofde if its dnode
+      dNode->setParent(NULL);//new//deletes parent of d node so there is no link
     }
     else if(temp->getLeft() == dNode){
-      temp->setLeft(NULL);
+      temp->setLeft(NULL);//deletes left node if its dnode
+      dNode->setParent(NULL);//new//deletes parent of d node so there is no link
     }
+    
   
   }
   //  else if(dNode == head){
@@ -130,57 +133,55 @@ void deleteNode(Tree* &dNode,Tree* &head){
   
   else if(dNode->getRight()!= NULL && dNode->getLeft()!=NULL){
     cout<<"Two Children"<<endl;
-    c = dNode->getRight();
-    while(c->getLeft()!=NULL){
-      c = c->getLeft();
-      more = true;
-    }
-
-    if(more!=true){
-      c->setParent(dNode->getParent());//sets parent of the new node
-      c->setLeft(dNode->getLeft());//sets left of the new node
-      dNode->getParent()->setRight(c);//gets the parent of the old node and sets its child as c
-    }
-    else if(more==true){
-      if(c->getRight()==NULL){//if there is not  a tree attatched to c
-	value = c->getChild()->getRoot();//gets the correct value for new node
-	c->getParent()->setLeft(NULL);//sets the parent to next null
-	dNode->getChild()->setRoot(value);//resets dnode to the correct value
+    // if(dNode != head){
+      c = dNode->getRight();//c is the succesor to c node 
+      while(c->getLeft()!=NULL){
+	c = c->getLeft();
+	more = true;
       }
-      else if(c->getRight()!=NULL){//if there is a tree attatched to c
-	value = c->getChild()->getRoot();//gets new value for new node
-	dNode->getChild()->setRoot(value);//sets the dnode to the correct value
-	c->getParent()->setLeft(c->getRight());//sets the old position of c to be its right handed tree
+      if(more!=true){
+	if(dNode->getParent()->getRight() == dNode){
+	  c->setParent(dNode->getParent());//sets parent of the new node
+	  c->setLeft(dNode->getLeft());//sets left of the new node            
+	  dNode->getParent()->setRight(c);//gets the parent of the old node and sets its child as c              
+	  dNode->setLeft(NULL);//new                                                                             
+	  dNode->setRight(NULL);
+	  dNode->setParent(NULL);
+	}
+	else if(dNode->getParent()->getLeft() == dNode){
+	  c->setParent(dNode->getParent());//sets parent of the new node                                
+	  c->setLeft(dNode->getLeft());//sets left of the new node                                               
+	  dNode->getParent()->setLeft(c);//gets the parent of the old node and sets its child as c               
+	  dNode->setLeft(NULL);//new                                                                             
+	  dNode->setRight(NULL);
+        dNode->setParent(NULL);
+	}
       }
-    }
-    // cout<<"c: "<<c->getChild()->getRoot()<<endl;
-    // newTree->getChild()->setRoot(c->getChild()->getRoot());
-    // if(more==true){
-    //  temp = dNode->getParent();
-    //  if(temp->getRight() == dNode){
-    //	temp->setRight(newTree);
-    //	newTree->setLeft(dNode->getLeft());
-    //	newTree->setRight(dNode->getRight());
-    //  }
-    //  else if(temp->getLeft() == dNode){
-    //	temp->setLeft(newTree);
-    //	newTree->setLeft(dNode->getLeft());
-    //	newTree->setRight(dNode->getRight());
-    // }
-    // }
-    // else if(more!=true){
-    // temp = dNode->getParent();
-    // temp->setRight(c);
+      else if(more==true){
+	if(c->getRight()==NULL){//if there is not  a tree attatched to c
+	  value = c->getChild()->getRoot();//gets the correct value for new node
+	  c->getParent()->setLeft(NULL);//sets the parent to next null
+	  dNode->getChild()->setRoot(value);//resets dnode to the correct value
+	  c->setParent(NULL);//new
+	  
+	}
+	else if(c->getRight()!=NULL){//if there is a tree attatched to c
+	  value = c->getChild()->getRoot();//gets new value for new node
+	  dNode->getChild()->setRoot(value);//sets the dnode to the correct value
+	  temp = c->getParent();//new
+	  Tree* right = c->getRight();//new
+	  temp->setLeft(right);//sets the old position of c to be its right handed tree
+	  right->setParent(temp);//new
+	  c->setParent(NULL);//new
+	  c->setRight(NULL);//new
+	}
+      }
       
-
-
-    // }
- //delete c
-    //the problem is that this c doesnt exist or like its parent doesnt exist because it IS dnode
     
   }
   else if((dNode->getRight()!= NULL && dNode->getLeft()==NULL) || (dNode->getRight()==NULL && dNode->getLeft()!=NULL)){
     cout<<"One Child"<<endl;
+    //checks to see if dnode has a left or right child
     if(dNode->getRight()!=NULL){
       extraChild = dNode->getRight();
     }
@@ -188,18 +189,25 @@ void deleteNode(Tree* &dNode,Tree* &head){
       extraChild = dNode->getLeft();
     }
     temp = dNode->getParent();
+    //checks to see which side of tree dnode is on
     if(temp->getRight() == dNode){
       temp->setRight(extraChild);
+      extraChild->setParent(temp);//new
+      dNode->setParent(NULL);//new
+      dNode->setRight(NULL);//new
     }
     else if(temp->getLeft() == dNode){
       temp->setLeft(extraChild);
+      extraChild->setParent(temp);//new
+      dNode->setParent(NULL);//new
+      dNode->setLeft(NULL);//new
     }
   }
   
   
 }
 
-Tree* findNode(Tree* node, Tree* current, int value){
+Tree* findNode(Tree* node, Tree* current, int value){//gos through whole tree and searches for node given
   if(node == NULL){//returns NULL if head node doesnt exist
     return node;
   }
@@ -208,12 +216,10 @@ Tree* findNode(Tree* node, Tree* current, int value){
     return current;
   }
   else if(current->getChild()->getRoot() <=value){
-    cout<<"Whoop 1"<<endl;
     current = current->getRight();
     return findNode(node, current,value);
   }
   else if(current->getChild()->getRoot() >value){
-    cout<<"Whoop 2"<<endl;
     current = current->getLeft();
     return findNode(node,current,value);
   }
