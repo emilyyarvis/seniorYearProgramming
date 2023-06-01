@@ -1,0 +1,806 @@
+#include <iostream>
+#include <queue>
+#include<vector>
+#include "Tree.h"
+
+using namespace std;
+
+void recolor(Tree* &input);
+void check(Tree* &head,Tree* current);
+
+bool done =false;
+
+void sort(vector<int> &inputVector,int length){
+ 
+  vector<int> sorted;
+  
+  int realLength=length;
+  int largest=0;
+  int count=0;
+  int temp[length];
+  int pos=0;
+  
+  
+  while(count<realLength){//while we still need to go through numbers in array
+    for(int i=0;i<realLength;i++){//for them all
+      if(inputVector[i]>largest){//if somethings bigger then the largest found switch em
+	largest=inputVector[i];
+	pos=i;
+      }
+    }
+    inputVector[pos]=0;//delte from old array
+    sorted.push_back(largest);//add to new array
+    largest=0;
+    count=count+1;
+    //sort again fro next largest until out of numbers
+  }
+  for(int i=0;i<realLength;i++){//reassign to array
+    inputVector[i]=sorted[i];
+
+  }
+  cout<<"SORTED"<<endl;
+}
+
+void printTree(vector<int>sorted,int trueLength,int index, int level){
+
+   if (index >= trueLength){//if there is nothing in the array passed
+        return;
+  }
+  printTree(sorted, trueLength, 2 * index + 2, level + 1);//prints teh right side of the tree
+    for (int i = 0; i < level; i++){
+      cout << "   ";//prints teh correct number of spaces for the given node based on its level
+    }
+    cout << sorted[index] << endl;//prints the current node
+    printTree(sorted, trueLength, 2 * index + 1, level + 1);//prints the left side of the tree
+}
+void printTree2(Tree* root,int space){
+
+  int COUNT = 2;  
+
+    // Base case
+  if (root == NULL){
+        return;
+  }
+    // Increase distance between levels
+    space += COUNT;
+ 
+    // Process right child first
+    printTree2(root->getRight(), space);
+ 
+    // Print current node after space
+    // count
+    for (int i = COUNT; i < space-1; i++){
+      cout << " ";
+          }
+    // cout<<"-";
+    cout<<endl;
+    
+    for (int i = COUNT; i < space; i++){
+        cout << " ";
+    
+    }
+    
+    
+    cout <<root->getChild()->getRoot()<<root->getChild()->getColor()<<"\n";
+ 
+    // Process left child
+    printTree2(root->getLeft(), space);
+
+  
+}
+bool searchTree(Tree* head, Tree* current, int input){
+  bool check1=false;
+  bool check2=false;
+  
+  if (current == NULL){
+    return false;
+  }
+  if (current->getChild()->getRoot() == input){
+    cout<<"This3: " <<current->getChild()->getRoot()<<endl;
+    return true;
+  }
+ 
+  check1 = searchTree(head,current->getLeft(), input);
+
+ 
+  if(check1){
+    cout<<"This2: " <<current->getChild()->getRoot()<<endl;
+    return true;
+  }
+ 
+  check2 = searchTree(head,current->getRight(), input);
+  cout<<"This1: " <<current->getChild()->getRoot()<<endl;  
+  return check2;
+
+}
+void deleteNode(Tree* &dNode,Tree* &head){
+  Tree* temp;
+  Tree* extraChild;
+  Tree* newTree;
+  Tree* c;
+  Tree* temp2;
+  int value;
+  bool more = false;
+  if(dNode->getRight() == NULL&& dNode->getLeft() ==NULL){
+    cout<<"No children"<<endl;
+    temp = dNode->getParent();
+    if(temp->getRight() == dNode){
+      temp->setRight(NULL);//deletes right nofde if its dnode
+      dNode->setParent(NULL);//new//deletes parent of d node so there is no link
+    }
+    else if(temp->getLeft() == dNode){
+      temp->setLeft(NULL);//deletes left node if its dnode
+      dNode->setParent(NULL);//new//deletes parent of d node so there is no link
+    }
+    
+  
+  }
+  else if(dNode == head){
+   c = dNode->getRight();
+   while(c->getLeft()!=NULL){
+     c = c->getLeft();
+     more = true;
+   }
+
+   if (more!=true){
+     head->getChild()->setRoot(c->getChild()->getRoot());
+     head->setRight(c->getRight());
+     head->getRight()->setParent(head);
+     c->setRight(NULL);
+     c->setParent(NULL);
+
+   }
+   else if (more == true){
+     if(c->getRight()!=NULL){
+     head->getChild()->setRoot(c->getChild()->getRoot());
+     extraChild = c->getRight();
+     c->getParent()->setLeft(extraChild);
+     extraChild->setParent(c->getParent());
+     c->setParent(NULL);
+     c->setRight(NULL);
+       }
+     else if(c->getRight()==NULL){
+       head->getChild()->setRoot(c->getChild()->getRoot());
+       c->getParent()->setLeft(NULL);
+       c->setParent(NULL);
+     }
+   }
+  //  value = c->getChild()->getRoot();
+  //  head->getChild()->setRoot(value);
+  //  c->getParent()->setLeft(NULL);
+  }
+  
+  else if(dNode->getRight()!= NULL && dNode->getLeft()!=NULL){
+    cout<<"Two Children"<<endl;
+    // if(dNode != head){
+      c = dNode->getRight();//c is the succesor to c node 
+      while(c->getLeft()!=NULL){
+	c = c->getLeft();
+	more = true;
+      }
+      if(more!=true){
+	if(dNode->getParent()->getRight() == dNode){
+	  c->setParent(dNode->getParent());//sets parent of the new node
+	  c->setLeft(dNode->getLeft());//sets left of the new node            
+	  dNode->getParent()->setRight(c);//gets the parent of the old node and sets its child as c              
+	  dNode->setLeft(NULL);//new                                                                             
+	  dNode->setRight(NULL);
+	  dNode->setParent(NULL);
+	}
+	else if(dNode->getParent()->getLeft() == dNode){
+	  c->setParent(dNode->getParent());//sets parent of the new node                                
+	  c->setLeft(dNode->getLeft());//sets left of the new node                                               
+	  dNode->getParent()->setLeft(c);//gets the parent of the old node and sets its child as c               
+	  dNode->setLeft(NULL);//new                                                                             
+	  dNode->setRight(NULL);
+        dNode->setParent(NULL);
+	}
+      }
+      else if(more==true){
+	if(c->getRight()==NULL){//if there is not  a tree attatched to c
+	  value = c->getChild()->getRoot();//gets the correct value for new node
+	  c->getParent()->setLeft(NULL);//sets the parent to next null
+	  dNode->getChild()->setRoot(value);//resets dnode to the correct value
+	  c->setParent(NULL);//new
+	  
+	}
+	else if(c->getRight()!=NULL){//if there is a tree attatched to c
+	  value = c->getChild()->getRoot();//gets new value for new node
+	  dNode->getChild()->setRoot(value);//sets the dnode to the correct value
+	  temp = c->getParent();//new
+	  Tree* right = c->getRight();//new
+	  temp->setLeft(right);//sets the old position of c to be its right handed tree
+	  right->setParent(temp);//new
+	  c->setParent(NULL);//new
+	  c->setRight(NULL);//new
+	}
+      }
+      
+    
+  }
+  else if((dNode->getRight()!= NULL && dNode->getLeft()==NULL) || (dNode->getRight()==NULL && dNode->getLeft()!=NULL)){
+    cout<<"One Child"<<endl;
+    //checks to see if dnode has a left or right child
+    if(dNode->getRight()!=NULL){
+      extraChild = dNode->getRight();
+    }
+    else if(dNode->getLeft()!=NULL){
+      extraChild = dNode->getLeft();
+    }
+    temp = dNode->getParent();
+    //checks to see which side of tree dnode is on
+    if(temp->getRight() == dNode){
+      temp->setRight(extraChild);
+      extraChild->setParent(temp);//new
+      dNode->setParent(NULL);//new
+      dNode->setRight(NULL);//new
+    }
+    else if(temp->getLeft() == dNode){
+      temp->setLeft(extraChild);
+      extraChild->setParent(temp);//new
+      dNode->setParent(NULL);//new
+      dNode->setLeft(NULL);//new
+    }
+  }
+  
+  
+}
+
+Tree* findNode(Tree* node, Tree* current, int value){//gos through whole tree and searches for node given
+  if(node == NULL){//returns NULL if head node doesnt exist
+    return node;
+  }
+  if(current->getChild()->getRoot() == value){
+    cout<<"found"<<endl;
+    return current;
+  }
+  else if(current->getChild()->getRoot() <=value){
+    current = current->getRight();
+    return findNode(node, current,value);
+  }
+  else if(current->getChild()->getRoot() >value){
+    current = current->getLeft();
+    return findNode(node,current,value);
+  }
+  return findNode(node,current,value);
+}
+
+
+void buildTree(queue<int> &input,Tree* &head,Tree* current){
+  Tree* temp;
+  while(head==NULL){
+    head = new Tree(new Child(input.front()));
+    input.pop();
+    cout<<"WHOOP: "<<head->getChild()->getRoot()<<endl;
+    current = head;
+  }
+
+  if(current->getChild()->getRoot() <= (input.front())&&input.empty()!=1){
+    while(current->getRight() != NULL){
+      
+      current = current->getRight();
+      return buildTree(input,head,current);
+    }
+    current->setRight(new Tree(new Child(input.front())));
+    temp = current->getRight();
+    temp->setParent(current);
+    input.pop();
+    check(head,current);//new
+    if(input.empty()==1){
+     cout<<"empty"<<endl;
+    }
+    else{
+     return buildTree(input,head,head);
+      }
+  }
+  else if(current->getChild()->getRoot() > (input.front())&&input.empty()!=1){
+    while(current->getLeft() != NULL){
+      current = current->getLeft();
+      return buildTree(input,head,current);
+    }
+    current->setLeft(new Tree(new Child(input.front())));
+    temp = current->getLeft();
+    temp->setParent(current);
+    input.pop();
+    check(head,current);//new
+    if(input.empty()==1){
+      cout<<"empty"<<endl;
+    }
+    else{
+     return buildTree(input,head,head);
+       }
+    }
+      cout<<"it is done"<<endl;
+}
+
+///////////////////////////////////////////////////////////////////////////
+void buildTree2(queue<int> &input,Tree* &head,Tree* current){
+  Tree* temp;
+  while(head == NULL){//case 1 no head node
+
+    head = new Tree(new Child(input.front()));
+    head->getChild()->setColor('B');
+    input.pop();
+    cout<<"WHOOP: "<<head->getChild()->getRoot()<<endl;
+    current = head;
+  }
+  if(current->getChild()->getRoot() <= (input.front())&&input.empty()!=1){
+    while(current->getRight() != NULL){
+      current = current->getRight();
+      return buildTree2(input,head,current);
+    }
+    // if(current->getChild()->getColor() == 'B'){//case 2 parent is  black node
+      cout<<"black"<<endl;
+      current->setRight(new Tree(new Child(input.front())));
+      temp = current->getRight();
+      temp->setParent(current);
+      input.pop();
+      cout<<current->getChild()->getRoot()<<endl;
+      // check(head,current);
+      if(input.empty()==1){
+	cout<<"empty"<<endl;
+      }
+      else{
+	return buildTree2(input,head,head);
+      } 
+      // }
+    
+      // else if(current->getChild()->getColor() == 'R'){
+      // cout<<"red"<<endl;
+      // }
+
+  }
+  else if(current->getChild()->getRoot() > (input.front())&&input.empty()!=1){
+    
+    while(current->getLeft() != NULL){
+      current = current->getLeft();
+      return buildTree2(input,head,current);
+    }
+    // if(current->getChild()->getColor() == 'B'){
+      cout<<"black"<<endl;
+      current->setLeft(new Tree(new Child(input.front())));
+      temp = current->getLeft();
+      temp->setParent(current);
+      input.pop();
+      cout<<current->getChild()->getRoot()<<endl;
+      //     check(head,current);
+      if(input.empty()==1){
+        cout<<"empty"<<endl;
+      }
+      else{
+        return buildTree2(input,head,head);
+      }
+      // }
+    
+      // else if(current->getChild()->getColor() == 'R'){
+      // cout<<"red"<<endl;
+      // }
+    
+    
+  }
+  
+}
+
+
+void caseOne(Tree* &head,Tree* current){//case 1                                                                                            
+  if(head->getChild()->getColor()!= 'B'){
+    head->getChild()->setColor('B');
+  }
+}
+
+void caseRedChildren(Tree* &head,Tree* current){
+  if(current->getChild()->getColor() == 'R'){
+    if(current->getRight()!=NULL&&current->getRight()->getChild()->getColor() != 'B'){
+      Tree* r = current->getRight();
+      recolor(r);
+    }
+    if(current->getLeft()!=NULL&&current->getLeft()->getChild()->getColor() != 'B'){
+      Tree* r = current->getLeft();
+      recolor(r);
+    }
+  }
+  
+}
+
+
+void caseTwo(Tree* &head,Tree* current){
+  //do nothing???
+  
+}
+
+void caseThree(Tree* &head,Tree* current){
+  cout<<"YOO"<<endl;
+  cout<<current->getChild()->getRoot()<<endl;
+  if(current!=head){
+  if(current->getParent()->getChild()->getColor() == 'R'){//case 3 parent and uncle are red                          
+    cout<<"HIII"<<endl;
+    if(current->getParent()->getRight() == current){//means current is on the right                                       
+      if(current->getParent()->getParent()->getLeft()->getChild()->getColor() == 'R'){
+        Tree* p = current->getParent();
+        Tree* g = current->getParent()->getParent();
+        Tree* u = current->getParent()->getParent()->getLeft();
+        recolor(p);
+        recolor(g);
+        recolor(u);
+      }
+      
+    }
+    else if (current->getParent()->getLeft() == current){//means current is on the left                                   
+      if(current->getParent()->getParent()->getRight()->getChild()->getColor() == 'R'){
+	cout<<"excuse me"<<endl;
+	Tree* p = current->getParent();
+        Tree* g = current->getParent()->getParent();
+        Tree* u = current->getParent()->getParent()->getRight();
+        recolor(p);
+        recolor(g);
+        recolor(u);
+	cout<<"donsies"<<endl;
+      }
+    }
+    
+  }
+  else if(current->getParent()->getChild()->getColor() == 'B'){
+    cout<<"nope"<<endl;
+    
+  }
+  }
+
+ 
+
+ }
+
+void caseFour(Tree* &head, Tree* current){
+  if(current->getParent()!=NULL && current->getParent()->getParent()!= NULL){
+  Tree* p = current->getParent();
+  Tree* g = current->getParent()->getParent();
+  Tree* u;
+  Tree* a = NULL;//extra children
+  Tree* b = NULL;//extra children
+  Tree* c = NULL;//extra children
+  if(current!=NULL && p!=NULL && g!=NULL&&current!=head){
+    // cout<<"1"<<endl;
+    if(g->getLeft() == p){//checks to see which side the uncle should be for the given case
+      if(g->getRight() != NULL){
+	u = g->getRight();
+      }
+      if(p->getRight() == current){//checks to make sure that parent and current are on the irght side of eachother
+	cout<<"Case 4 Right"<<endl;
+
+	//temp store children
+	if(p->getLeft()!=NULL){
+	  a = p->getLeft();
+	}
+	if(current->getLeft() !=NULL){
+	  b = current->getLeft();
+	}
+	if(current->getRight()!=NULL){
+	  c = current->getRight();
+	}
+	cout<<"1"<<endl;
+
+	//current
+	g->setLeft(current);
+	current->setParent(g);
+	current->setRight(NULL);
+	current->setLeft(NULL);
+	//parent
+	current->setLeft(p);
+	p->setParent(current);
+	p->setLeft(NULL);
+	p->setRight(NULL);
+	//setting a b and c
+	p->setLeft(a);
+	a->setParent(p);
+	p->setRight(b);
+	b->setParent(p);
+	current->setRight(c);
+	c->setParent(current);
+      }
+    }
+    else if(g->getRight() == p){
+      if(g->getLeft()!=NULL){
+	u =  g->getLeft();
+      }
+      
+      if(p->getLeft() == current){
+      cout<<"Case 4 left"<<endl;
+
+
+      if(current->getLeft() != NULL){
+	a = current->getLeft();
+      }
+      if(current->getRight()!=NULL){
+	b = current->getRight();
+      }
+      if(p->getRight()!=NULL){
+	c = p->getRight();
+      }
+      //current
+      g->setRight(current);
+      current->setParent(g);
+      current->setRight(NULL);
+      current->setLeft(NULL);
+      //parent
+      current->setRight(p);
+      p->setParent(current);
+      p->setLeft(NULL);
+      p->setRight(NULL);
+      //adding in extra children
+      p->setRight(c);
+      c->setParent(p);
+      p->setLeft(b);
+      b->setParent(p);
+      current->setLeft(a);
+      a->setParent(current);
+
+
+      }
+    }
+  }
+  }
+}
+
+void caseFive(Tree* &head, Tree* current,bool &done){
+  Tree* p = NULL;
+  Tree* u = NULL;
+  Tree* g = NULL;
+  //extra children
+  Tree* a = NULL;
+  Tree* b = NULL;
+  Tree* c = NULL;
+  Tree* d = NULL;
+  Tree* e = NULL;
+  if(current->getParent() !=NULL && current->getParent()->getParent()){
+
+    p = current->getParent();
+    g = current->getParent()->getParent();
+
+    if(g->getRight() == p){
+      u = g->getLeft();
+      cout<<"Case 5 Right"<<endl;
+
+      if(u->getLeft()!=NULL){
+	a = u->getLeft();
+      }
+      if(u->getRight() != NULL){
+	b = u->getRight();
+      }
+      if(p->getLeft()!=NULL){
+	c = p->getLeft();
+      }
+      if(current->getLeft()!=NULL){
+	d = current->getLeft();
+      }
+      if(current->getRight()!=NULL){
+	e = current->getRight();
+      }
+
+      if(g == head){
+	head = p;
+	p->setParent(NULL);
+	p->setLeft(g);
+	p->setRight(current);
+	g->setParent(p);
+	current->setParent(p);
+	g->setLeft(u);
+	u->setParent(g);
+
+	u->setLeft(a);
+	a->setParent(u);
+	u->setRight(b);
+	b->setParent(u);
+	g->setRight(c);
+	c->setParent(g);
+	current->setLeft(d);
+	d->setParent(current);
+	current->setRight(e);
+	e->setParent(current);
+
+	recolor(p);
+	recolor(g);
+	done =true;
+	
+      }
+      else if(g!=head){
+
+      }
+
+
+
+
+      
+    }
+    else if(g->getLeft() == p){
+      u = g->getRight();
+      cout<<"Case 5 Left"<<endl;
+
+      //temporarily assigns children for later
+      if(current->getLeft()!=NULL){
+	a= current->getLeft();
+      }
+      if(current->getRight()!=NULL){
+	b = current->getRight();
+      }
+      if(p->getRight()!= NULL){
+	c = p->getRight();
+      }
+      if(u->getLeft()!=NULL){
+	d = u->getLeft();
+      }
+      if(u->getRight()!=NULL){
+	e = u->getRight();
+      }
+      //checks if head for rotation
+      if(g == head){
+	head = p;
+	p->setParent(NULL);
+	p->setLeft(current);
+	p->setRight(g);
+	//sets heads kids
+	current->setParent(p);
+	g->setParent(p);
+
+	g->setRight(u);
+
+	current->setRight(NULL);
+	current->setLeft(NULL);
+	g->setLeft(NULL);
+	u->setLeft(NULL);
+	u->setRight(NULL);
+
+	current->setLeft(a);
+	a->setParent(current);
+	current->setRight(b);
+	b->setParent(current);
+	g->setLeft(c);
+	c->setParent(g);
+	u->setLeft(d);
+	d->setParent(u);
+	u->setRight(e);
+	e->setParent(u);
+
+	recolor(p);
+	recolor(g);
+	done =true;
+
+      }
+      else if(g!=head){
+	cout<<"YAYYYYYY3"<<endl;
+
+	Tree* pg = NULL;
+	pg = g->getParent();
+	if(pg->getLeft() == g){
+
+	  pg->setLeft(p);
+          p->setParent(pg);
+	  
+	  p->setParent(NULL);
+	  p->setLeft(current);
+	  p->setRight(g);
+	  //sets heads kids                                                                                                                        
+	  current->setParent(p);
+	  g->setParent(p);
+
+	  g->setRight(u);
+	  
+	  current->setRight(NULL);
+	  current->setLeft(NULL);
+	  g->setLeft(NULL);
+	  u->setLeft(NULL);
+	  u->setRight(NULL);
+	  
+	  current->setLeft(a);
+	  a->setParent(current);
+	  current->setRight(b);
+	  b->setParent(current);
+	  g->setLeft(c);
+	  c->setParent(g);
+	  u->setLeft(d);
+	  d->setParent(u);
+	  u->setRight(e);
+	  e->setParent(u);
+	  recolor(p);
+	  recolor(g);
+
+	  done = true;
+	}
+	else if(pg->getRight() == g){
+
+	  pg->setRight(p);
+	  p->setParent(pg);
+	  //
+	  p->setLeft(current);
+	  p->setRight(g);
+	  //sets heads kids                                                                                                                        
+	  current->setParent(p);
+	  g->setParent(p);
+	  
+	  g->setRight(u);
+	  
+	  current->setRight(NULL);
+	  current->setLeft(NULL);
+	  g->setLeft(NULL);
+	  u->setLeft(NULL);
+	  u->setRight(NULL);
+	  
+	  current->setLeft(a);
+	  a->setParent(current);
+	  current->setRight(b);
+	  b->setParent(current);
+	  g->setLeft(c);
+	  c->setParent(g);
+	  u->setLeft(d);
+	  d->setParent(u);
+	  u->setRight(e);
+	  e->setParent(u);
+	  recolor(p);
+	  recolor(g);
+	  done = true;
+
+	}
+	
+      }
+
+
+
+
+
+    }
+
+  }
+  
+
+}
+
+void betterPrint(Tree* &head,Tree* current){
+   if(current->getLeft()!=NULL){
+    betterPrint(head,current->getLeft());
+  }
+  cout<<current->getChild()->getRoot()<<current->getChild()->getColor()<<endl;
+   if(current->getRight()!=NULL){
+    betterPrint(head,current->getRight());
+  }
+
+}
+void check(Tree* &head,Tree* current){
+  cout<<"Went"<<endl;
+  if(current->getLeft()!=NULL){
+    check(head,current->getLeft());
+  }
+  printTree2(head,0);
+  caseOne(head,current);
+  //caseThree(head,current);
+
+  cout<<"HaLLo: "<<current->getChild()->getRoot()<<endl;
+  // caseFour(head,current);
+  caseFive(head,current,done);
+  cout<<"uuuu"<<endl;
+  if(current->getRight()!=NULL&& done == false){
+    check(head,current->getRight());
+  }
+  else if(done == true){
+    cout<<"lets see if that works"<<endl;
+  }
+  
+}
+
+void recolor(Tree* &input){
+  if(input->getChild()->getColor() == 'R'){
+    input->getChild()->setColor('B');
+  }
+  else if(input->getChild()->getColor() == 'B'){
+    input->getChild()->setColor('R');
+  }
+
+}
+
+void rightRotation(){
+
+  
+  
+}
+
+void leftRotation(){
+
+  
+}
