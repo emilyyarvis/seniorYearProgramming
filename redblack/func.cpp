@@ -7,7 +7,7 @@ using namespace std;
 
 void recolor(Tree* &input);
 void recursiveCheck(Tree* &head,Tree* current);
-void caseFive(Tree* &head,Tree*current,bool &done);
+void caseFive(Tree* &head,Tree*current);
 void correctCheck(Tree* head, Tree* current, bool &finish);
 
 
@@ -32,7 +32,7 @@ void sort(vector<int> &inputVector,int length){
 	pos=i;
       }
     }
-    inputVector[pos]=0;//delte from old array
+    inputVector[pos]=0;//delete from old array
     sorted.push_back(largest);//add to new array
     largest=0;
     count=count+1;
@@ -413,24 +413,33 @@ void caseThree(Tree* &head,Tree* current, bool &finish){
       Tree* g =current->getParent()->getParent();
       Tree* u = NULL;
       if(p->getRight() == current){
-	if(g->getRight() == p && g->getLeft()!=NULL){
-	  u = g->getLeft();
+	if(g->getRight() == p){
+	  if(g->getLeft()!=NULL){
+	    u = g->getLeft();
+	  }
+	 
 	  
 	}
-	else if(g->getLeft() ==p && g->getRight()!=NULL){
-	  u = g->getRight();
+	else if(g->getLeft() ==p){
+	  if(g->getRight()!=NULL){
+	    u = g->getRight();
+	  }
+	 
 
 	}
       }
       
       else  if(p->getLeft() == current){
-	if(g->getRight() == p&& g->getLeft()!=NULL){
-	  u = g->getLeft();
-        }
-        else if(g->getLeft()==p && g->getRight()!=NULL){
-	  u = g->getRight();
-	  
-        }
+	if(g->getRight() == p){
+	  if(g->getLeft()!=NULL){
+	    u = g->getLeft();
+	  }
+	}
+        else if(g->getLeft()==p ){
+	  if(g->getRight()!=NULL){
+	    u = g->getRight();
+	  }
+	}
       }
       if(u!=NULL&& u->getChild()->getColor() == 'R'){
 	cout<<"Case3"<<endl;
@@ -440,6 +449,8 @@ void caseThree(Tree* &head,Tree* current, bool &finish){
 	correctCheck(head,g,finish);
 
       }
+  
+  
   }
 
 
@@ -498,101 +509,645 @@ void caseThree(Tree* &head,Tree* current,bool &finish){
 
  }
 */
-void caseFour(Tree* &head, Tree* current){
-  if(current->getParent()!=NULL && current->getParent()->getParent()!= NULL){
-  Tree* p = current->getParent();
-  Tree* g = current->getParent()->getParent();
-  Tree* u;
-  Tree* a = NULL;//extra children
-  Tree* b = NULL;//extra children
-  Tree* c = NULL;//extra children
-  if(current!=NULL && p!=NULL && g!=NULL&&current!=head && p->getChild()->getColor()=='R' &&current->getChild()->getColor() == 'R'){
-   
-    if(g->getLeft() == p){//checks to see which side the uncle should be for the given case
-      if(g->getRight() != NULL){
-	u = g->getRight();
-      
-	if(p->getRight() == current &&u!=NULL&& u->getChild()->getColor()=='B'){//checks to make sure that parent and current are on the irght side of eachother
-	  cout<<"Case 4 Right"<<endl;
-	  
-	  //temp store children
+void caseFour(Tree* &head, Tree* current,bool &finish){
+  if(current!= NULL && current->getParent()!=NULL&&current->getParent()->getParent()!=NULL){//as long as node and par and grandparent doesnt equal null
+    Tree* p=current->getParent();
+    Tree* g=current->getParent()->getParent();
+    // Tree* u=NULL;
+    Tree* a=NULL;
+    bool aCheck=false;
+    Tree* b=NULL;
+    bool bCheck=false;
+    Tree* c=NULL;
+    bool cCheck=false;
+    if(p->getChild()->getColor() == 'R' && current->getChild()->getColor() == 'R'){//check to make sure current and parent are red
+      if(g->getLeft() == p && p->getRight() == current){//left case 4
+	if((g->getRight() !=NULL && g->getRight()->getChild()->getColor()== 'B')||g->getRight() == NULL){//uncle exists and is black or is null
+
+	  cout<<"Case4R"<<endl;
+
+	  //add extra children
 	  if(p->getLeft()!=NULL){
 	    a = p->getLeft();
+	    aCheck = true;
 	  }
-	  if(current->getLeft() !=NULL){
+	  if(current->getLeft()!=NULL){
 	    b = current->getLeft();
+	    bCheck = true;
 	  }
 	  if(current->getRight()!=NULL){
 	    c = current->getRight();
+	    cCheck = true;
 	  }
-	  cout<<"1"<<endl;
-	  
-	  //current
+
 	  g->setLeft(current);
 	  current->setParent(g);
-	  current->setRight(NULL);
-	  current->setLeft(NULL);
-	  //parent
 	  current->setLeft(p);
 	  p->setParent(current);
 	  p->setLeft(NULL);
 	  p->setRight(NULL);
-	  //setting a b and c
-	  p->setLeft(a);
-	  a->setParent(p);
-	  p->setRight(b);
-	  b->setParent(p);
-	  current->setRight(c);
-	  c->setParent(current);
-	  caseFive(head,p,done);
+	  current->setRight(NULL);
+	  
+	  //add extra children back in
+	  if(aCheck ==true){
+	    p->setLeft(a);
+	  }
+	  if(bCheck == true){
+	    p->setRight(b);
+	  }
+	  if(cCheck == true){
+	    current->setRight(c);
+	  }
+	  finish=true;//new
+	  caseFive(head,p);
+	  //CALL CASE5 ON THE PAREMT 
+
 	}
+
+
+	
       }
-    }
-    else if(g->getRight() == p){
-      if(g->getLeft()!=NULL){
-	u =  g->getLeft();
-	cout<<"WHAT THE FFINF HELL"<<endl;
-	
-	
-	if(p->getLeft() == current && u->getChild()->getColor()=='B'){
-	  cout<<"Case 4 left"<<endl;
-	  
-	  
-	  if(current->getLeft() != NULL){
-	    a = current->getLeft();
-	  }
-	  if(current->getRight()!=NULL){
-	    b = current->getRight();
-	  }
-	  if(p->getRight()!=NULL){
-	    c = p->getRight();
-	  }
-	  //current
+      else if(g->getRight() == p && p->getLeft() == current){//right case 4
+	cout<<"atleast this happend"<<endl;
+	if((g->getLeft()!=NULL && g->getLeft()->getChild()->getColor()== 'B')||g->getLeft()==NULL){//uncle exists and is black or null
+	  cout<<"case4L"<<endl;
+	  if(current->getLeft()!=NULL){
+            a = current->getLeft();
+            aCheck = true;
+          }
+          if(current->getRight()!=NULL){
+            b = current->getRight();
+            bCheck = true;
+          }
+          if(p->getRight()!=NULL){
+            c = p->getRight();
+            cCheck = true;
+          }
+
 	  g->setRight(current);
 	  current->setParent(g);
-	  current->setRight(NULL);
-	  current->setLeft(NULL);
-	  //parent
 	  current->setRight(p);
 	  p->setParent(current);
+	  current->setLeft(NULL);
 	  p->setLeft(NULL);
 	  p->setRight(NULL);
-	  //adding in extra children
-	  p->setRight(c);
-	  c->setParent(p);
-	  p->setLeft(b);
-	  b->setParent(p);
-	  current->setLeft(a);
-	  a->setParent(current);
-	  caseFive(head,p,done);
-	  
+
+	  if(aCheck == true){
+	    current->setLeft(a);
+	  }
+	  if(bCheck == true){
+	    p->setLeft(b);
+	  }
+	  if(cCheck == true){
+	    p->setRight(c);
+	  }
+	  finish=true;//new
+	 caseFive(head,p); 
 	}
+
       }
+
+
+
+
+
+
+
+
+
+
     }
-  }
+
+    
+    
+  
   }
 }
 
+
+/*
+void caseFour(Tree* &head, Tree* current){
+  if(current->getParent()!=NULL && current->getParent()->getParent()!= NULL){
+    Tree* p = current->getParent();
+    Tree* g = current->getParent()->getParent();
+    Tree* u = NULL;
+    Tree* a = NULL;//extra children
+    Tree* b = NULL;//extra children
+    Tree* c = NULL;//extra children
+    if(current!=NULL && p!=NULL && g!=NULL&&current!=head && p->getChild()->getColor()=='R' &&current->getChild()->getColor() == 'R'){
+      
+      if(g->getLeft() == p){//checks to see which side the uncle should be for the given case
+	if(g->getRight() != NULL){
+	  u = g->getRight();
+	  
+	  if(p->getRight() == current &&u!=NULL&& u->getChild()->getColor()=='B'){//checks to make sure that parent and current are on the irght side of eachother
+	    cout<<"Case 4 Right"<<endl;
+	    
+	    //temp store children
+	    if(p->getLeft()!=NULL){
+	      a = p->getLeft();
+	    }
+	    if(current->getLeft() !=NULL){
+	      b = current->getLeft();
+	    }
+	    if(current->getRight()!=NULL){
+	      c = current->getRight();
+	    }
+	    cout<<"1"<<endl;
+	    
+	    //current
+	    g->setLeft(current);
+	    current->setParent(g);
+	    current->setRight(NULL);
+	    current->setLeft(NULL);
+	    //parent          g->setLeft(current);
+	    current->setParent();//ALERTTTTT
+          current->setLeft(p);
+          p->setParent(current);
+          p->setLeft(NULL);
+          p->setRight(NULL);
+          current->setRight(NULL);//ALERTTT
+	    current->setLeft(p);
+	    p->setParent(current);
+	    p->setLeft(NULL);
+	    p->setRight(NULL);
+	    //setting a b and c
+	    p->setLeft(a);
+	    a->setParent(p);
+	    p->setRight(b);
+	    b->setParent(p);
+	    current->setRight(c);
+	    c->setParent(current);
+	    caseFive(head,p,done);
+	  }
+	}
+	else if(g->getRight()==NULL){
+	  u = NULL;
+	  
+	  if(p->getRight() == current){//checks to make sure that parent and current are on the irght side of eachother                     
+	    cout<<"Case 4 Right"<<endl;
+	    
+	    //temp store children                                                                                                                                                      
+	    if(p->getLeft()!=NULL){
+	      a = p->getLeft();
+	    }
+	    if(current->getLeft() !=NULL){
+	      b = current->getLeft();
+	    }
+	    if(current->getRight()!=NULL){
+	      c = current->getRight();
+	    }
+	    
+	    
+	    //current                                                                                                                                                                  
+	    g->setLeft(current);
+	    current->setParent(g);
+	    current->setRight(NULL);
+	    current->setLeft(NULL);
+	    //parent                                                                                                                                                                   
+	    current->setLeft(p);
+	    p->setParent(current);
+	    p->setLeft(NULL);
+	    p->setRight(NULL);
+	    //setting a b and c                                                                                                                                                        
+	    p->setLeft(a);
+	    a->setParent(p);
+	    p->setRight(b);
+	    b->setParent(p);
+	    current->setRight(c);
+	    c->setParent(current);
+	    caseFive(head,p,done);
+	  }
+	  
+	}
+      }
+      else if(g->getRight() == p){
+	if(g->getLeft()!=NULL){
+	  u =  g->getLeft();
+	  cout<<"WHAT THE FFINF HELL"<<endl;
+	  
+	  
+	  if(p->getLeft() == current && u->getChild()->getColor()=='B'){
+	    cout<<"Case 4 left"<<endl;
+	    
+	    
+	    if(current->getLeft() != NULL){
+	      a = current->getLeft();
+	    }
+	    if(current->getRight()!=NULL){
+	      b = current->getRight();
+	    }
+	    if(p->getRight()!=NULL){
+	      c = p->getRight();
+	    }
+	    //current
+	    g->setRight(current);
+	    current->setParent(g);
+	    current->setRight(NULL);
+	    current->setLeft(NULL);
+	    //parent
+	    current->setRight(p);
+	    p->setParent(current);
+	    p->setLeft(NULL);
+	    p->setRight(NULL);
+	    //adding in extra children
+	    p->setRight(c);
+	    c->setParent(p);
+	    p->setLeft(b);
+	    b->setParent(p);
+	    current->setLeft(a);
+	    a->setParent(current);
+	    caseFive(head,p,done);
+	    
+	  }
+	}
+	if(g->getLeft()==NULL){
+	  u =  NULL;
+	  cout<<"WHAT THE FFINF HELL"<<endl;
+	  
+	  
+	  if(p->getLeft() == current ){
+	    cout<<"Case 4 left"<<endl;
+	    
+	    
+	    if(current->getLeft() != NULL){
+	      a = current->getLeft();
+	    }
+	    if(current->getRight()!=NULL){
+	      b = current->getRight();
+	    }
+	    if(p->getRight()!=NULL){
+	      c = p->getRight();
+	    }
+	    //current                                                                                                                                                                  
+	    g->setRight(current);
+	    current->setParent(g);
+	    current->setRight(NULL);
+	    current->setLeft(NULL);
+	    //parent                                                                                                                                                                   
+	    current->setRight(p);
+	    p->setParent(current);
+	    p->setLeft(NULL);
+	    p->setRight(NULL);
+	    //adding in extra children                                                                                                                                                 
+	    p->setRight(c);
+	    c->setParent(p);
+	    p->setLeft(b);
+	    b->setParent(p);
+	    current->setLeft(a);
+	    a->setParent(current);
+	    caseFive(head,p,done);
+	    
+	  }
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	}
+      }
+    }
+  }
+}
+
+*/
+
+void caseFive(Tree* &head,Tree* current){//uncle is black and parent and current are bith to the irght or left
+  if(current!=NULL&&current->getParent()!=NULL&&current->getParent()->getParent()){//if current and parent and g are not null
+    Tree* p = current->getParent();
+    Tree* g = current->getParent()->getParent();
+    Tree* u = NULL;
+    Tree* a = NULL;
+    bool aCheck=false;
+    Tree* b = NULL;
+    bool bCheck = false;
+    Tree* c = NULL;
+    bool cCheck = false;
+    Tree* d = NULL;
+    bool dCheck = false;
+    Tree* e =NULL;
+    bool eCheck = false;
+    if(g->getLeft() == p && p->getLeft()==current&& p->getChild()->getColor() == 'R' && current->getChild()->getColor() == 'R'){
+
+      //if uncle is not NULL but black
+      if(g->getRight()!=NULL && g->getRight()->getChild()->getColor() == 'B'){
+	cout<<"CASE5L UNCLE"<<endl;
+	u = g->getRight();
+	//assign children
+	if(current->getLeft()!=NULL){
+	  a = current->getLeft();
+	  aCheck=true;
+	}
+	if(current->getRight()!=NULL){
+	  b = current->getRight();
+          bCheck=true;
+	}
+	if(p->getRight()!=NULL){
+	  c = p->getRight();
+          cCheck=true;
+	}
+	if(u->getLeft()!=NULL){
+	  d = u->getLeft();
+          dCheck=true;
+	}
+	if(u->getRight()!=NULL){
+	  e = u->getRight();
+          eCheck=true;
+	}
+	//////////////////////////////////////////
+	if(g ==head){
+	  head = p;
+	  p->setParent(NULL);
+	}
+	else if(g!=head){//////////
+	  Tree* gp;
+	  gp = g->getParent();
+	  if(gp->getLeft()==g){
+	    gp->setLeft(p);
+	    p->setParent(gp);
+	  }
+	  else if(gp->getRight()==g){
+	    gp->setRight(p);
+	    p->setParent(gp);
+	  }
+	}///////////dealing woth head null or not
+
+	//p->setParent(NULL);
+	p->setLeft(current);
+	current->setParent(p);
+	p->setRight(g);
+	g->setParent(p);
+	g->setRight(u);
+	u->setParent(g);
+	
+	current->setLeft(NULL);
+	current->setRight(NULL);
+	g->setLeft(NULL);
+	u->setRight(NULL);
+	u->setLeft(NULL);
+
+
+	if(aCheck==true){
+	  current->setLeft(a);
+	  a->setParent(current);
+	}
+	if(bCheck==true){
+	  current->setRight(b);
+	  b->setParent(current);
+        }
+	if(cCheck==true){
+	  g->setLeft(c);
+	  c->setParent(g);
+        }
+	if(dCheck==true){
+	  u->setLeft(d);
+	  d->setParent(u);
+        }
+	if(eCheck==true){
+	  u->setRight(e);
+	  e->setParent(u);
+        }
+	
+	recolor(p);
+	recolor(g);
+      }/////////////////////////////////
+
+      //if uncle is  NULL
+      else if(g->getRight()==NULL){
+	////////children/////
+	cout<<"CASE5L NO UNCLE"<<endl;
+	if(current->getLeft()!=NULL){
+          a = current->getLeft();
+          aCheck=true;
+        }
+        if(current->getRight()!=NULL){
+          b = current->getRight();
+          bCheck=true;
+        }
+        if(p->getRight()!=NULL){
+          c = p->getRight();
+          cCheck=true;
+        }
+       
+
+	/////////
+
+	
+	if(g==head){
+	  head=p;
+	  p->setParent(NULL);
+	}
+	else if(g!=head){
+	  Tree* gp;
+	  gp = g->getParent();
+	  if(gp->getLeft()==g){
+	    gp->setLeft(p);
+	    p->setParent(gp);
+	  }
+	  else if(gp->getRight() == g){
+	    gp->setRight(p);
+	    p->setParent(gp);
+	  }
+	}
+	p->setLeft(current);
+	current->setParent(p);
+	p->setRight(g);
+	g->setParent(p);
+
+	current->setLeft(NULL);
+	current->setRight(NULL);
+	g->setLeft(NULL);
+	g->setRight(NULL);
+
+	if(aCheck==true){
+	  current->setLeft(a);
+	  a->setParent(current);
+	}
+	if(bCheck==true){
+	  current->setRight(b);
+	  b->setParent(current);
+	}
+	if(cCheck==true){
+	  g->setLeft(c);
+	  c->setParent(g);
+	}
+
+	recolor(p);
+	recolor(g);
+      }
+      
+
+    }////////////
+    //RIGHTTTTTT
+    else if(g->getRight()==p && p->getRight()==current && p->getChild()->getColor() == 'R' && current->getChild()->getColor() == 'R'){
+
+      //if uncle is not null but black
+      if(g->getLeft()!=NULL && g->getLeft()->getChild()->getColor() == 'B'){
+	cout<<"CASE5 R UNCLE"<<endl;
+	u = g->getLeft();
+
+	if(u->getLeft()!= NULL){
+	  a = u->getLeft();
+	  aCheck=true;
+	}
+	if(u->getRight()!=NULL){
+	  b = u->getRight();
+	  bCheck=true;
+	}
+	if(p->getLeft()!=NULL){
+	  c=p->getLeft();
+	  cCheck=true;
+	}
+	if(current->getLeft()!=NULL){
+	  d=current->getLeft();
+	  dCheck=true;
+	}
+	if(current->getRight()!=NULL){
+	  e=current->getRight();
+	  eCheck=true;
+	}
+	
+
+
+
+	//////////////////////////////
+	if(g==head){
+	  head=p;
+	  p->setParent(NULL);
+	}
+	else if(g!=head){
+	  Tree* gp=g->getParent();
+	  if(gp->getLeft() == g){
+	    gp->setLeft(p);
+	    p->setParent(gp);
+	    
+	  }
+	  else if(gp->getRight()==g){
+	    gp->setRight(p);
+	    p->setParent(gp);
+	  }
+	  
+	  
+	}
+	///////////////////////////
+	p->setLeft(g);
+	g->setParent(p);
+	p->setRight(current);
+	current->setParent(p);
+	g->setLeft(u);
+	u->setParent(g);
+
+	u->setLeft(NULL);
+	u->setRight(NULL);
+	g->setRight(NULL);
+	current->setLeft(NULL);
+	current->setRight(NULL);
+
+	if(aCheck==true){
+	  u->setLeft(a);
+	  a->setParent(u);
+	  
+	}
+	if(bCheck==true){
+	  u->setRight(b);
+	  b->setParent(u);
+	}
+	if(cCheck==true){
+	  g->setRight(c);
+	  c->setParent(g);
+	}
+	if(dCheck==true){
+	  current->setLeft(d);
+	  d->setParent(current);
+	}
+	if(eCheck==true){
+	  current->setRight(e);
+	  e->setParent(current);
+	}
+
+	recolor(p);
+	recolor(g);
+	
+      }
+     
+      //if uncle is null
+      else if(g->getLeft()==NULL){
+	cout<<"CASE 5 R NO UNCLE"<<endl;
+	
+	if(p->getLeft()!=NULL){
+          c=p->getLeft();
+          cCheck=true;
+        }
+        if(current->getLeft()!=NULL){
+          d=current->getLeft();
+          dCheck=true;
+        }
+        if(current->getRight()!=NULL){
+          e=current->getRight();
+          eCheck=true;
+        }
+
+	
+	//////////////////////////////
+	if(g==head){
+          head=p;
+          p->setParent(NULL);
+        }
+        else if(g!=head){
+          Tree* gp=g->getParent();
+          if(gp->getLeft() == g){
+            gp->setLeft(p);
+            p->setParent(gp);
+	    
+          }
+          else if(gp->getRight()==g){
+            gp->setRight(p);
+            p->setParent(gp);
+          }
+	}
+        /////////////////////////// 
+
+	p->setLeft(g);
+	g->setParent(p);
+	p->setRight(current);
+	current->setParent(p);
+	
+	g->setLeft(NULL);
+	g->setRight(NULL);
+	current->setLeft(NULL);
+	current->setRight(NULL);
+
+	if(cCheck==true){
+          g->setRight(c);
+          c->setParent(g);
+        }
+        if(dCheck==true){
+          current->setLeft(d);
+          d->setParent(current);
+        }
+	if(eCheck==true){
+          current->setRight(e);
+          e->setParent(current);
+        }
+	recolor(p);
+	recolor(g);
+	
+      }
+
+    }
+
+
+  }
+  // recolor(p);
+  // recolor(g);
+}
+
+
+/*
 void caseFive(Tree* &head,Tree*current,bool &done){
   Tree* p = NULL;
   Tree* u = NULL;
@@ -618,149 +1173,370 @@ void caseFive(Tree* &head,Tree*current,bool &done){
     g= current->getParent()->getParent();
     //if left left
     if(p->getChild()->getColor()=='R'&&current->getChild()->getColor()=='R'){
-      if(g->getLeft() == p && p->getLeft() == current&&g->getRight()!=NULL && done!=true){
+      if(g->getLeft() == p && p->getLeft() == current && done!=true){
 	cout<<"Left Case 5"<<endl;
+
+
+	if(g->getRight()!=NULL){
+	  u = g->getRight();
 	
-	u = g->getRight();
-	
-	//define extra children
-	if(current->getLeft()!=NULL){
-	  a=current->getLeft();
-	  aCheck=true;
-	}
-	if(current->getRight()!=NULL){
-	  b=current->getRight();
-	  bCheck=true;
-	}
-	if(p->getRight()!=NULL){
-	  c=p->getRight();
-	  cCheck=true;
-	}
-	if(u->getLeft()!=NULL){
-	  d=u->getLeft();
-	  dCheck=true;
-	}
-	if(u->getRight()!=NULL){
-	  e=u->getRight();
-	  eCheck=true;
-	}
-	
-	if(u->getChild()->getColor() =='B'){
-	  if(g==head && done!=true){
-	    cout<<"yes"<<endl;
-	    head = p;
-	    head->setParent(NULL);
-	    head->setLeft(current);
-	    head->setRight(g);
-	    current->setParent(head);
-	    g->setParent(head);
-	    g->setRight(u);
-	    u->setParent(g);
-	    
-	    current->setLeft(NULL);
-	    current->setRight(NULL);
-	    g->setLeft(NULL);
-	    u->setLeft(NULL);
-	    u->setRight(NULL);
-	    
-	    if(aCheck==true){
-	      current->setLeft(a);
-	    }
-	    if(bCheck==true){
-	      current->setRight(b);
-	    }
-	    if(cCheck==true){
-	      g->setLeft(c);
-	    }
-	    if(dCheck==true){
-	      u->setLeft(d);
-	    }
-	    if(eCheck==true){
-	      u->setRight(e);
-	    }
-	    recolor(p);
-	    recolor(g);
-	    done=true;
+     
+	  
+	  //define extra children
+	  if(current->getLeft()!=NULL){
+	    a=current->getLeft();
+	    aCheck=true;
 	  }
+	  if(current->getRight()!=NULL){
+	    b=current->getRight();
+	    bCheck=true;
+	  }
+	  if(p->getRight()!=NULL){
+	    c=p->getRight();
+	    cCheck=true;
+	  }
+	  if(u->getLeft()!=NULL){
+	    d=u->getLeft();
+	    dCheck=true;
+	  }
+	  if(u->getRight()!=NULL){
+	    e=u->getRight();
+	    eCheck=true;
+	  }
+
+	  
+	  if(u->getChild()->getColor() =='B'){
+	    if(g==head && done!=true){
+	      cout<<"yes"<<endl;
+	      head = p;
+	      head->setParent(NULL);
+	      head->setLeft(current);
+	      head->setRight(g);
+	      current->setParent(head);
+	      g->setParent(head);
+	      g->setRight(u);
+	      u->setParent(g);
+	      
+	      current->setLeft(NULL);
+	      current->setRight(NULL);
+	      g->setLeft(NULL);
+	      u->setLeft(NULL);
+	      u->setRight(NULL);
+	      
+	      if(aCheck==true){
+		current->setLeft(a);
+	      }
+	      if(bCheck==true){
+		current->setRight(b);
+	      }
+	      if(cCheck==true){
+		g->setLeft(c);
+	      }
+	      if(dCheck==true){
+		u->setLeft(d);
+	      }
+	      if(eCheck==true){
+		u->setRight(e);
+	      }
+	      recolor(p);
+	      recolor(g);
+	      done=true;
+	    }
+	    
+	    
+	    else if(g!=head && done!=true){
+	      pg = g->getParent();
+	      if(pg->getLeft()==g){
+		pg->setLeft(p);
+	      }
+	      else if(pg->getRight()==g){
+		pg->setRight(p);
+	      }
+	      p->setParent(pg);
+	      p->setLeft(current);
+	      p->setRight(g);
+	      current->setParent(p);
+	      g->setParent(p);
+	      g->setRight(u);
+	      u->setParent(g);
+	      
+	      current->setLeft(NULL);
+	      current->setRight(NULL);
+	      g->setLeft(NULL);
+	      u->setLeft(NULL);
+	      u->setRight(NULL);
+	      
+	      if(aCheck==true){
+		current->setLeft(a);
+	      }
+	      if(bCheck==true){
+		current->setRight(b);
+	      }
+	      if(cCheck==true){
+		g->setLeft(c);
+	      }
+	      if(dCheck==true){
+		u->setLeft(d);
+	      }
+	      if(eCheck==true){
+		u->setRight(e);
+	      }
+	      recolor(p);
+	      recolor(g);
+	      done=true;
+	    }
+	  }
+	}
+	else if(g->getRight()==NULL){//WHEN UNCLE IS NULL
+	  //define extra children
+	  u=NULL;
+	  
+          if(current->getLeft()!=NULL){
+            a=current->getLeft();
+            aCheck=true;
+          }
+          if(current->getRight()!=NULL){
+            b=current->getRight();
+            bCheck=true;
+          }
+          if(p->getRight()!=NULL){
+            c=p->getRight();
+            cCheck=true;
+          }
 	
 	  
-	  else if(g!=head && done!=true){
-	    pg = g->getParent();
-	    if(pg->getLeft()==g){
-	    pg->setLeft(p);
-	    }
-	    else if(pg->getRight()==g){
-	      pg->setRight(p);
-	  }
-	    p->setParent(pg);
-	    p->setLeft(current);
-	    p->setRight(g);
-	    current->setParent(p);
-	    g->setParent(p);
-	    g->setRight(u);
-	    u->setParent(g);
-	    
-	    current->setLeft(NULL);
-	    current->setRight(NULL);
-	    g->setLeft(NULL);
-	    u->setLeft(NULL);
-	    u->setRight(NULL);
-	    
-	    if(aCheck==true){
-	      current->setLeft(a);
-	    }
-	    if(bCheck==true){
-	      current->setRight(b);
-	    }
-	    if(cCheck==true){
-	      g->setLeft(c);
-	    }
-	    if(dCheck==true){
-	      u->setLeft(d);
-	    }
-	    if(eCheck==true){
-	      u->setRight(e);
-	    }
-	    recolor(p);
-	    recolor(g);
-	    done=true;
-	  }
+            if(g==head && done!=true){
+             
+              head = p;
+              head->setParent(NULL);
+              head->setLeft(current);
+              head->setRight(g);
+              current->setParent(head);
+              g->setParent(head);
+              g->setRight(NULL);
+              u->setParent(g);
+
+              current->setLeft(NULL);
+              current->setRight(NULL);
+              g->setLeft(NULL);
+	      // u->setLeft(NULL);
+	      // u->setRight(NULL);
+
+              if(aCheck==true){
+                current->setLeft(a);
+              }
+              if(bCheck==true){
+                current->setRight(b);
+              }
+              if(cCheck==true){
+                g->setLeft(c);
+              }
+              if(dCheck==true){
+                u->setLeft(d);
+              }
+              if(eCheck==true){
+                u->setRight(e);
+              }
+              recolor(p);
+              recolor(g);
+              done=true;
+            }
+	    else if(g!=head && done!=true){
+              pg = g->getParent();
+              if(pg->getLeft()==g){
+                pg->setLeft(p);
+              }
+              else if(pg->getRight()==g){
+                pg->setRight(p);
+              }
+              p->setParent(pg);
+              p->setLeft(current);
+              p->setRight(g);
+              current->setParent(p);
+              g->setParent(p);
+              g->setRight(NULL);
+              u->setParent(g);
+
+              current->setLeft(NULL);
+              current->setRight(NULL);
+              g->setLeft(NULL);
+              //u->setLeft(NULL);
+              //u->setRight(NULL);
+
+              if(aCheck==true){
+                current->setLeft(a);
+              }
+              if(bCheck==true){
+                current->setRight(b);
+              }
+              if(cCheck==true){
+                g->setLeft(c);
+              }
+	      //  if(dCheck==true){
+              //  u->setLeft(d);
+	      // }
+	      // if(eCheck==true){
+              //  u->setRight(e);
+	      // }
+              recolor(p);
+              recolor(g);
+              done=true;
+            }
+          
 	}
-      }
+      }//
       
       
       //if right right
       else if(g->getRight() == p && p->getRight() == current && done!=true){
 	cout<<"Right case 5"<<endl;
-	u=g->getLeft();
 	
-	
-	
-	
-	//define extra children
-	if(u->getLeft()!=NULL){
-	  a = u->getLeft();
-	  aCheck=true;
-	}
-	if(u->getRight()!=NULL){
-	  b= u->getRight();
-	  bCheck = true;
-	}
-	if(p->getLeft()!=NULL){
-	  c = p->getLeft();
-	  cCheck=true;
-	}
-	if(current->getLeft()!=NULL){
-	  d = current->getLeft();
-	  dCheck=true;
-	}
-	if(current->getRight()!=NULL){
-	  e = current->getRight();
-	  eCheck=true;
-	}
-	
-      
-	if(u->getChild()->getColor()){
+	if(g->getLeft()!=NULL){
+	  u=g->getLeft();
+	  
+	  
+	  
+	  
+	  //define extra children
+	  if(u->getLeft()!=NULL){
+	    a = u->getLeft();
+	    aCheck=true;
+	  }
+	  if(u->getRight()!=NULL){
+	    b= u->getRight();
+	    bCheck = true;
+	  }
+	  if(p->getLeft()!=NULL){
+	    c = p->getLeft();
+	    cCheck=true;
+	  }
+	  if(current->getLeft()!=NULL){
+	    d = current->getLeft();
+	    dCheck=true;
+	  }
+	  if(current->getRight()!=NULL){
+	    e = current->getRight();
+	    eCheck=true;
+	  }
+	  
+
+
+      	  if(u->getChild()->getColor()=='B'){
+	    if(g==head && done!=true){
+	      head = p;
+	      p->setParent(NULL);
+	      p->setLeft(g);
+	      p->setRight(current);
+	      current->setParent(p);
+	      g->setParent(p);
+	      u->setParent(g);
+	      g->setLeft(u);    
+	      u->setLeft(NULL);
+	      u->setRight(NULL);
+	      p->setLeft(NULL);
+	      current->setLeft(NULL);
+	      current->setRight(NULL);
+	      if(aCheck==true){
+		u->setLeft(a);
+		a->setParent(u);
+	      }
+	      if(bCheck==true){
+		u->setRight(b);
+		b->setParent(u);
+	      }
+	      if(cCheck==true){
+		p->setLeft(c);
+		c->setParent(p);
+	      }
+	      if(dCheck==true){
+		current->setLeft(d);
+		d->setParent(current);
+	      }
+	      if(eCheck==true){
+		current->setRight(e);
+		e->setParent(current);
+	      }
+	      recolor(p);
+	      recolor(g);
+	      done=true;
+	    }
+
+
+
+
+
+
+	    
+	    else if (g!=head && done!=true){
+	      pg = g->getParent();
+	      if(pg->getLeft()==g){
+		pg->setLeft(p);
+	      }
+	      else if(pg->getRight()==g){
+		pg->setRight(p);
+	      }
+	      
+	      p->setParent(pg);
+	      p->setLeft(g);
+	      p->setRight(current);
+	      current->setParent(p);
+	      g->setParent(p);
+	      u->setParent(g);
+	      g->setLeft(u);
+	      
+	      
+	      u->setLeft(NULL);
+	      u->setRight(NULL);
+	      p->setLeft(NULL);
+	      current->setLeft(NULL);
+	      current->setRight(NULL);
+	      
+	      
+	      if(aCheck==true){
+		u->setLeft(a);
+		a->setParent(u);
+	      }
+	      if(bCheck==true){
+		u->setRight(b);
+		b->setParent(u);
+	      }
+	      if(cCheck==true){
+		p->setLeft(c);
+		c->setParent(p);
+	      }
+	      if(dCheck==true){
+		current->setLeft(d);
+		d->setParent(current);
+	      }
+	      if(eCheck==true){
+		current->setRight(e);
+		e->setParent(current);
+	      }
+	      recolor(p);
+	      recolor(g);
+	      done=true;
+	    }
+	  }
+	}//
+	else if(g->getLeft() == NULL){
+
+
+          //define extra children                                                                                                                
+
+          if(p->getLeft()!=NULL){
+            c = p->getLeft();
+            cCheck=true;
+          }
+          if(current->getLeft()!=NULL){
+            d = current->getLeft();
+            dCheck=true;
+          }
+          if(current->getRight()!=NULL){
+            e = current->getRight();
+            eCheck=true;
+          }
+	  
+	  
 	  if(g==head && done!=true){
 	    head = p;
 	    p->setParent(NULL);
@@ -768,25 +1544,14 @@ void caseFive(Tree* &head,Tree*current,bool &done){
 	    p->setRight(current);
 	    current->setParent(p);
 	    g->setParent(p);
-	    u->setParent(g);
-	    g->setLeft(u);
-	    
-	    
-	    u->setLeft(NULL);
-	    u->setRight(NULL);
+	    // u->setParent(g);
+	    g->setLeft(NULL);
+	    // u->setLeft(NULL);
+	    // u->setRight(NULL);
 	    p->setLeft(NULL);
 	    current->setLeft(NULL);
 	    current->setRight(NULL);
-	    
-	    
-	    if(aCheck==true){
-	      u->setLeft(a);
-	      a->setParent(u);
-	    }
-	    if(bCheck==true){
-	      u->setRight(b);
-	      b->setParent(u);
-	    }
+	   
 	    if(cCheck==true){
 	      p->setLeft(c);
 	      c->setParent(p);
@@ -803,6 +1568,7 @@ void caseFive(Tree* &head,Tree*current,bool &done){
 	    recolor(g);
 	    done=true;
 	  }
+	  
 	  else if (g!=head && done!=true){
 	    pg = g->getParent();
 	    if(pg->getLeft()==g){
@@ -817,25 +1583,18 @@ void caseFive(Tree* &head,Tree*current,bool &done){
 	    p->setRight(current);
 	    current->setParent(p);
 	    g->setParent(p);
-	    u->setParent(g);
-	    g->setLeft(u);
+	    //  u->setParent(g);
+	    g->setLeft(NULL);
 	    
 	    
-	    u->setLeft(NULL);
-	    u->setRight(NULL);
+	    // u->setLeft(NULL);
+	    // u->setRight(NULL);
 	    p->setLeft(NULL);
 	    current->setLeft(NULL);
 	    current->setRight(NULL);
 	    
 	    
-	    if(aCheck==true){
-	      u->setLeft(a);
-	      a->setParent(u);
-	    }
-	    if(bCheck==true){
-	      u->setRight(b);
-	      b->setParent(u);
-	    }
+	   
 	    if(cCheck==true){
 	      p->setLeft(c);
 	      c->setParent(p);
@@ -852,13 +1611,25 @@ void caseFive(Tree* &head,Tree*current,bool &done){
 	    recolor(g);
 	    done=true;
 	  }
+	  
+
+
+
+
+
+
+
+
+	  
 	}
-	
+	      
+
 	
       }
     }
   }
 }
+*/
 
 void betterPrint(Tree* &head,Tree* current){
    if(current->getLeft()!=NULL){
@@ -925,8 +1696,11 @@ void correctCheck(Tree* head, Tree* current, bool& finish){
     caseThree(head,current,finish);
   }
   if(finish == false){
-  caseFour(head,current);
-  caseFive(head,current,done);
+    caseFour(head,current,finish);//new finish is new
+  // caseFive(head,current,done);
+  }
+  if(finish==false){//new
+    caseFive(head,current);
   }
 
   cout<<"DONE"<<endl;
