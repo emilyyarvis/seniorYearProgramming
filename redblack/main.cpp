@@ -61,18 +61,7 @@ cin>>input;
     }
   
     
-    else if(input == "DELETE"){
-      //case 1 is when it is just a leaf and doesnt have any children attatched to it
-      //case 2 is node to be deleted only has one child
-      //case 3 is node to be deleted has 2 children
-      int value;
-      cout<<"What number would you like to delete"<<endl;
-      cin>>value;
-      Tree* test =  findNode(head,head,value);
-      cout<<test->getChild()->getRoot()<<endl;
-      deleteNode(test,head);
-      
-    }
+   
     else if(input == "SEARCH"){
       int inputNew;
       cout<<"What number would you like to look for"<<endl;
@@ -103,6 +92,27 @@ cin>>input;
       // check(head,head);     
       printTree2(head,0);
     }
+    else if(input=="DELETE"){
+      int deleteNum;
+      Tree* toDelete;
+      cout<<"which number would you like to delete"<<endl;
+      cin>>deleteNum;
+      toDelete = findNode(head,head,deleteNum);
+     
+      if(toDelete==NULL){
+	cout<<"cant find"<<endl;
+      }
+      else if(toDelete!=NULL){
+	cout<<"found"<<endl;
+
+	deleter(head,head,toDelete);
+	
+
+
+	
+      }
+    }
+    
     else if(input == "QUIT"){
       loop = false;
       break;
