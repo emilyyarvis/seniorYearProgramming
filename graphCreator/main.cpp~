@@ -1,0 +1,53 @@
+#include <iostream>
+//#include "vertex.h"
+#include "edge.h"
+#include <queue>
+
+void main(){
+    bool loop = true;
+    string input;
+    vector<vertex*> vertexList;
+    int vectorCount=0;
+    while(loop ==true){
+        cin>>input;
+        if(input== "ADD"){
+            cout<<"What would you like to add? a vertex or an edge?"
+            cin>>input;
+            if(input== "vertex"){
+                cout<<"What would you like to name this vertex"<<endl;
+                cin>>input;
+                vertex* newVertex = new Vertex(input);
+                vertexList.push_back(newVertex);
+                vectorCount=vectorCount+1;
+                }
+            else if(input=="edge"){
+                int weight;
+                cout<<"What weight(integer) should this edge have"<<enedl;
+                cin>>weight;
+                cout<<"Whats the label of the first point this edge should be attatched to?"
+                cin<<input;
+                cout<<"Whats the label of the second point this edge should be attatched to?"
+                cin<<input;
+                //edge* newEdge = new Edge(
+            }
+            
+        }
+        
+        
+        
+    }
+    
+}
+                  
+void findVertex(string inputLabel,vector<vertex*> inputList){
+    
+    
+}
+
+                                         
+                                         
+                                         
+                                         
+                                         
+                                         
+                                         

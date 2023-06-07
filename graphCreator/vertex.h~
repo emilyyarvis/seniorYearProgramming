@@ -1,0 +1,14 @@
+#include<iostream>
+
+using namespace  std;
+
+class vertex{
+
+public:
+    vertex(string inputLabel);
+    string getLabel();
+    void setLabel(string inputLabel);
+
+private:
+    string label;
+}

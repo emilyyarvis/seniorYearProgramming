@@ -1,0 +1,20 @@
+#include <iostream>
+#include "vertex.h"
+
+
+using namespace std;
+
+vertex::vertex(string inputLabel){
+    label = inputLabel;
+
+}
+string vertex::getLabel(){
+    return label;
+    
+}
+void vertex::setLabel(string inputLabel){
+    label = inputLabel;
+    
+}
+
+
