@@ -12,7 +12,7 @@ void correctCheck(Tree* head, Tree* current, bool &finish,bool &test);
 void runCases(Tree* &head, Tree* &oldNode);
 void deleteCaseOne(Tree* &head, Tree* &replacement,bool &finish);
 void deleteCaseTwo(Tree* &head,  Tree* &replacement);
-tr  deleteCaseFive(Tree* &head, Tree* &replacement);
+void deleteCaseFive(Tree* &head, Tree* &replacement);
 //void deleteCaseThree(Tree* &head, Tree* &replacement);
 //void deleteCaseFour(Tree* &head, Tree* &replacement);
 //void deleteCaseSix(Tree* &head, Tree* &replacement);
@@ -2208,6 +2208,8 @@ void runCases(Tree* &head, Tree* &oldNode){
   
   
 }
+/*
+
 void tr(Tree* &head,Tree* &replacement){
   Tree* p=NULL;
   Tree* s=NULL;
@@ -2249,7 +2251,7 @@ void tr(Tree* &head,Tree* &replacement){
   }
   s->setLeft(p);
   p->setParent(s);
-  p->setLeft(replacment);
+  p->setLeft(replacement);
   replacement->setParent(p);
 
   if(srCheck==true){
@@ -2262,6 +2264,8 @@ void tr(Tree* &head,Tree* &replacement){
   }
   
 }
+
+*/
 void deleteCaseTwo(Tree* &head,  Tree* &replacement){
   Tree* p=NULL;
   Tree* s=NULL;
