@@ -2290,7 +2290,7 @@ void deleteCaseTwo(Tree* &head,  Tree* &replacement){
 	  sl=s->getLeft();
 	  slCheck=true;
 	}
-	else if(s->getRight()!=NULL){
+	if(s->getRight()!=NULL){
 	  sr=s->getRight();
 	  srCheck=true;
 	}/////////////////////
@@ -2301,7 +2301,7 @@ void deleteCaseTwo(Tree* &head,  Tree* &replacement){
 	  s->setParent(NULL);
 	}
 	//cout<<"3"<<endl;
-	else if(p!=head){
+	if(p!=head){
 	  gp = p->getParent();
 	  cout<<"gp: "<<gp->getChild()->getRoot()<<endl;
 	  if(gp->getRight()==p){
