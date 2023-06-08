@@ -2,14 +2,20 @@
 #include <queue>
 #include<vector>
 #include "Tree.h"
-
+//100 90 110 105 80 95 130 140 70 85 87
 using namespace std;
 
 void recolor(Tree* &input);
 void recursiveCheck(Tree* &head,Tree* current);
 void caseFive(Tree* &head,Tree*current,bool &finish);
 void correctCheck(Tree* head, Tree* current, bool &finish,bool &test);
-
+void runCases(Tree* &head, Tree* &oldNode);
+void deleteCaseOne(Tree* &head, Tree* &replacement,bool &finish);
+void deleteCaseTwo(Tree* &head,  Tree* &replacement);
+tr  deleteCaseFive(Tree* &head, Tree* &replacement);
+//void deleteCaseThree(Tree* &head, Tree* &replacement);
+//void deleteCaseFour(Tree* &head, Tree* &replacement);
+//void deleteCaseSix(Tree* &head, Tree* &replacement);
 
 bool done =false;
 bool fin = false;
@@ -406,7 +412,7 @@ void caseRedChildren(Tree* &head,Tree* current){
   //  printTree2(head,0);
   
 }
-void caseThree(Tree* &head,Tree* current, bool &finish,bool &test){
+void caseThree(Tree* &head,Tree* current, bool &finish,bool &test,Tree* &m){
 
   if(current!=head && current->getParent()!=NULL && current->getParent()->getParent()!=NULL && current->getParent()->getChild()->getColor() == 'R'){
    
@@ -447,9 +453,10 @@ void caseThree(Tree* &head,Tree* current, bool &finish,bool &test){
 	recolor(p);
 	recolor(g);
 	recolor(u);
+	m = g;
 	finish = true;
 	test=true;
-	//correctCheck(head,g,finish);
+	//correctCheck(head,g,finish,test);
 	//cout<<"when do we get here head: "<<head->getChild()->getRoot()<<endl;
 	//finish=true;
       }
@@ -1718,33 +1725,70 @@ void recursiveCheck(Tree* &head,Tree* current){
 }
 */
 
+void printStuff(bool finish, bool test){
+  if(finish ==false){
+    cout<<"Finish is false"<<endl;
+  }
+  else if (finish ==true){
+    cout<<"Finish is true"<<endl;
+  }
+
+  if(test == false){
+    cout<<"Test is false"<<endl;
+  }
+  else if (test == true){
+    cout<<"test is true"<<endl;
+  }
+}
+
 void correctCheck(Tree* head, Tree* current, bool& finish,bool &test){
   finish=false;
-
+  Tree* m = NULL;
+  test=false;
    cout<<"Current: "<<current->getChild()->getRoot()<<endl;
   printTree2(head,0);
   if(finish == false){
+    cout<<"case one check"<<endl;
+    printStuff(finish,test);
+    
     caseOne(head,current,finish);
   }
   if(finish == false){
+    cout<<"case two check"<<endl;
+     printStuff(finish,test);
+    
     caseTwo(head,current,finish);
   }
   if(finish ==false){
-    caseThree(head,current,finish,test);
+    cout<<"case three check"<<endl;
+     printStuff(finish,test);
+    
+    caseThree(head,current,finish,test,m);
+   
     if(test == true){
-      correctCheck(head,current,finish,test);
-    }
+      cout<<"HEKKO"<<endl;
+      cout<<"m: "<<m->getChild()->getRoot()<<endl;  
+      correctCheck(head,m,finish,test);
+      cout<<"what is head at the now: "<<head->getChild()->getRoot()<<endl;
+      test=false;
+      finish=true;
+     }
   }
   if(finish == false){
+    cout<<"case 4 check"<<endl;
+     printStuff(finish,test);
     caseFour(head,current,finish);//new finish is new
   // caseFive(head,current,done);
   }
 
   if(finish==false){//new
+    cout<<"case 5 check"<<endl;
+     printStuff(finish,test);
+    
     caseFive(head,current,finish);
   }
-  // cout<<"what is head at the end: "<<head->getChild()->getRoot()<<endl;
-  // cout<<"DONE"<<endl;
+   cout<<"what is head at the end: "<<head->getChild()->getRoot()<<endl;
+  cout<<"DONE"<<endl;
 
 
 
@@ -1803,14 +1847,144 @@ Tree* successor(Tree*head, Tree* current,bool &skip,Tree* &newN){
 
 
 //deletion stuff
-
+/*
 void deleter(Tree* head, Tree* current, Tree* toDelete){
+  char deleteColor;
+  char replaceColor;
+  int oldValue;
+  int newValue;
+  bool skip = false;
+  Tree* n;
+  
+  if(toDelete->getRight()==NULL&&toDelete->getLeft()==NULL){//node to be deleted has no children 
+    cout<<"NO Kids"<<endl;
+  }
+  else if((toDelete->getRight()!=NULL && toDelete->getLeft()==NULL)||(toDelete->getRight()==NULL&&toDelete->getLeft()!=NULL)){
+    cout<<"ONE KID"<<endl;
+    Tree* p;
+    Tree* extra;
+    p=toDelete->getParent();
+    if(p->getLeft()==toDelete){//if delete is to the left                                       
+      if(toDelete->getRight()!=NULL){//if right exists and left is null
+	extra = toDelete->getRight();
+	if(toDelete->getChild()->getColor() == 'R' || toDelete->getRight()->getChild()->getColor() == 'R'){
+	  cout<<"1"<<endl;
+	  p->setLeft(extra);
+	 extra->setParent(p);
+	}
+	else if(toDelete->getChild()->getColor() != 'R' && toDelete->getRight()->getChild()->getColor()!= 'R'){
+	  //run the cases
+	  cout<<"2"<<endl;
+	  newValue = extra->getChild()->getRoot();
+	  p->getChild()->setRoot(newValue);
+	  //run checks on extra
+	  
+	}
+
+      }
+      else if(toDelete->getLeft()!=NULL){//if left exists and right is null
+	extra = toDelete->getLeft();
+	if(toDelete->getChild()->getColor() == 'R' || toDelete->getRight()->getChild()->getColor() == 'R'){
+          //dont run the case
+	  cout<<"3"<<endl;
+	   p->setLeft(extra);
+	   extra->setParent(p);                                                                   
+        }
+        else if(toDelete->getChild()->getColor() != 'R' && toDelete->getRight()->getChild()->getColor()!= 'R'){
+          //run the cases
+	  cout<<"4"<<endl;
+	  newValue = extra->getChild()->getRoot();
+	  p->getChild()->setRoot(newValue);
+	  //run checks on extra
+	}
+
+
+      }
+    }
+    else if(p->getRight()==toDelete){//if delete is to the right                                 
+      if(toDelete->getRight()!=NULL){//if right exists and left is null                          
+	if(toDelete->getChild()->getColor() == 'R' || toDelete->getRight()->getChild()->getColor() == 'R'){
+          //dont run the cases
+	  cout<<"5"<<endl;
+	  p->setRight(extra);
+	  extra->setParent(p);
+        }
+        else if(toDelete->getChild()->getColor() != 'R' && toDelete->getRight()->getChild()->getColor()!= 'R'){
+          //run the cases
+	  cout<<"6"<<endl;
+	  newValue = extra->getChild()->getRoot();
+          p->getChild()->setRoot(newValue);
+	  //run cases on extra
+        }
+
+	
+      }
+      else if(toDelete->getLeft()!=NULL){//if left exists and right is null                      
+	if(toDelete->getChild()->getColor() == 'R' || toDelete->getRight()->getChild()->getColor() == 'R'){
+          //dont run the cases
+	  cout<<"7"<<endl;
+	  p->setRight(extra);
+	  extra->setParent(p);
+        }
+        else if(toDelete->getChild()->getColor() != 'R' && toDelete->getRight()->getChild()->getColor()!= 'R'){
+          //run the cases
+	  cout<<"8"<<endl;
+	    
+	  newValue = extra->getChild()->getRoot();
+          p->getChild()->setRoot(newValue);
+	  //run cases on extra
+        }
+	
+      }
+    }
+
+
+
+
+    
+
+  }//end of one child case
+
+  else if(toDelete->getRight()!=NULL&&toDelete->getLeft()!=NULL){//if node to be delted has two kids                                                     
+    cout<<"Two kids"<<endl;
+    Tree* s;
+    s = successor(head,toDelete,skip,n);
+    cout<<s->getChild()->getRoot()<<endl;
+
+    if(s->getRight()!=NULL){
+
+
+    }
+
+    else if(s->getRight() == NULL){
+
+    }
+
+  }
+  
+}//end of deleter
+
+
+*/
+void deleter(Tree* &head, Tree* current, Tree* &toDelete){
   bool occoured=false;
   char deleteColor = toDelete->getChild()->getColor();
   char replaceColor;
+  int oldNum;
+  int newNum;
+  //  bool finish;
+  Tree* m;//replacement node
   if(toDelete->getRight()==NULL&&toDelete->getLeft()==NULL){//node to be deleted has no children
     cout<<"NO Kids"<<endl;
     occoured = true;
+
+    //RUN CASES//only if black
+    if(toDelete->getChild()->getColor()!='R'){
+      cout<<"RUN CASES a"<<endl;
+      //RUN CASES
+      runCases(head,toDelete);//NEW
+    }
+    
     Tree* p;
     p = toDelete->getParent();
     if(p->getLeft() == toDelete){
@@ -1831,26 +2005,68 @@ void deleter(Tree* head, Tree* current, Tree* toDelete){
     p=toDelete->getParent();
     if(p->getLeft()==toDelete){//if delete is to the left
       if(toDelete->getRight()!=NULL){//if right exists and left is null
+	
 	extra = toDelete->getRight();
-	p->setLeft(extra);
-	extra->setParent(p);
+	if(extra->getChild()->getColor()=='R'||toDelete->getChild()->getColor()=='R'){
+	  cout<<"1"<<endl;
+	   p->setLeft(extra);
+	   extra->setParent(p);
+	}
+	else{
+	  //run cases
+	  newNum = extra->getChild()->getRoot();
+	  p->getChild()->setRoot(newNum);
+	  cout<<"RUNCASES1"<<endl;
+	  runCases(head,extra);
+	  //delete after
+	}
       }
       else if(toDelete->getLeft()!=NULL){//if left exists and right is null
 	extra = toDelete->getLeft();
-	p->setLeft(extra);
-	extra->setParent(p);
+	if(extra->getChild()->getColor()=='R'||toDelete->getChild()->getColor()=='R'){
+	  p->setLeft(extra);
+          extra->setParent(p);
+        }
+	else{
+	  newNum = extra->getChild()->getRoot();
+          p->getChild()->setRoot(newNum);
+	  //run cases
+	  runCases(head,extra);
+	   cout<<"RUNCASES2"<<endl;
+	}
+
       }
     }
     else if(p->getRight()==toDelete){//if delete is to the right
       if(toDelete->getRight()!=NULL){//if right exists and left is null 
 	extra =	toDelete->getRight();
-        p->setRight(extra);
-        extra->setParent(p);
+	if(extra->getChild()->getColor()=='R'||toDelete->getChild()->getColor()=='R'){
+	  cout<<"3"<<endl;
+	  p->setRight(extra);
+          extra->setParent(p);
+        }
+        else{
+	  newNum = extra->getChild()->getRoot();
+          p->getChild()->setRoot(newNum);
+	  //run cases
+	  runCases(head,extra);
+	   cout<<"RUNCASES3"<<endl;
+	}
       }
       else if(toDelete->getLeft()!=NULL){//if left exists and right is null
 	extra =	toDelete->getLeft();
-        p->setRight(extra);
-        extra->setParent(p);
+	if(extra->getChild()->getColor()=='R'||toDelete->getChild()->getColor()=='R'){
+	  cout<<"4"<<endl;
+	  p->setRight(extra);
+	  extra->setParent(p);
+        }
+        else{
+	  newNum = extra->getChild()->getRoot();
+          p->getChild()->setRoot(newNum);
+	  //run cases
+	  runCases(head,extra);
+	   cout<<"RUNCASES4"<<endl;
+	}
       }
     }
 
@@ -1864,20 +2080,35 @@ void deleter(Tree* head, Tree* current, Tree* toDelete){
     bool exist=false;
     Tree* s;
     Tree* n=NULL;
-    int num;
+    // Tree* m = NULL;//new node that is in place of deleted
+   
     char color;
     s = successor(head,toDelete,skip,n);
     cout<<s->getChild()->getRoot()<<endl;
 
     if(s->getRight()!=NULL){
-      num = s->getChild()->getRoot(); 
-      color = s->getChild()->getColor();
+      newNum = s->getChild()->getRoot(); //saves num of replacement
+      color = s->getChild()->getColor();//unnessacary
 
-      toDelete->getChild()->setRoot(num);
-      toDelete->getChild()->setColor(color);
+      toDelete->getChild()->setRoot(newNum);//sets the ndoe with the replacement number for deletion
+      //   toDelete->getChild()->setColor(color);
+
+
+      //RUN THE CASES
+      
+      
+
       Tree*p = s->getParent();
       Tree*c = s->getRight();
-      
+
+      if(s->getChild()->getColor()=='R'||c->getChild()->getColor()=='R'){//as long as succesor or child is red dont run
+	//DO NOT RUN CASES
+	cout<<"RUN CASES C"<<endl;
+      }
+      else{
+	//RUN CASES on S
+	runCases(head,s);
+      }
       if(p->getLeft() == s){
 	p->setLeft(c);
 	c->setParent(p);
@@ -1892,11 +2123,29 @@ void deleter(Tree* head, Tree* current, Tree* toDelete){
       
     }
     else if(s->getRight()==NULL){
-      num = s->getChild()->getRoot();
+      newNum = s->getChild()->getRoot();//num of succesor
       color = s->getChild()->getColor();//color of successor
 	
-      toDelete->getChild()->setRoot(num);
-      toDelete->getChild()->setColor(color);
+      toDelete->getChild()->setRoot(newNum);//sets the new num
+      //      toDelete->getChild()->setColor(color);
+
+      //RUN CASES
+      if(s->getChild()->getColor()=='R'){
+        //DO NOT RUN CASES
+
+
+      }
+      else{
+	cout<<"RUN CASES D"<<endl;
+        //RUN CASES on S
+	runCases(head,s);
+	//cout<<"Head: "<<head->getChild()->getRoot()<<endl;
+	//printTree2(head,0);
+      }
+
+
+
+      
       Tree*p = s->getParent();
       if(p->getLeft() == s){
 	p->setLeft(NULL);
@@ -1906,20 +2155,511 @@ void deleter(Tree* head, Tree* current, Tree* toDelete){
 	p->setRight(NULL);
 	s->setParent(NULL);
       }
-      
+      cout<<"THIS: "<<p->getChild()->getRoot()<<endl;
+      m = p;
     }
+    //    cout<<"THIS: "<<p->getChild()->getRoot()<<endl;
     replaceColor = color;
 
     
-  }///////////////////////////////
-  if(occoured == true){
-    if(replaceColor != 'R' && deleteColor!= 'R'){
+  }
+
+  ///////////////////////////////
+ 
+      
+
+    
+    
+    
+  //100 90 110 105 80 95 130 75 120
+    
+
+
+  
+}//end of function
+
+void runCases(Tree* &head, Tree* &oldNode){
+  bool finish = false;
+  cout<<"OLD NODE: "<<oldNode->getChild()->getRoot()<<endl;
+ 
+  //deleteCaseOne(head,oldNode,finish);
+
+  
+  // if(finish==false){
+    deleteCaseTwo(head,oldNode);
+    //    deleteCaseThree(head,oldNode);
+    // deleteCaseFour(head,oldNode);
+    // deleteCaseFive(head,oldNode);
+    //  deleteCaseSix(head,oldNode);
+
+    
+    // }
+
+  //  deleteCaseFive(head,oldNode);
+
+  
+}
+
+  void deleteCaseOne(Tree* &head,  Tree* &replacement,bool &finish){
+  if(replacement == head){
+    cout<<"case one"<<endl;
+    finish=true;
+  }
+  
+  
+}
+void tr(Tree* &head,Tree* &replacement){
+  Tree* p=NULL;
+  Tree* s=NULL;
+  Tree* sl=NULL;
+  Tree* gp=NULL;
+  Tree* sr=NULL;
+  bool slCheck = false;
+  bool srCheck=false;
+  char pColor;
+  char sColor;
+
+  p = replacement->getParent();
+
+  if(s->getLeft()!=NULL){
+    slCheck=true;
+    sl=s->getLeft();
+  }
+  if(s->getRight()1=NULL){
+    srCheck=true;
+    sr=s->getRight();
+  }
+
+  if(p==head){
+    head=s;
+    s->setParent(NULL);
+  }
+  else if(p!=head){
+    Tree* gp = p->getParent();
+    if(gp->getRight()== p){
+      gp->setRight(s);
+      s->setParent(gp);
+    }
+    else if(gp->getLeft()==p){
+      gp->setLeft(s);
+      s->setParent(gp);
+       
+    }
+
+  }
+  s->setLeft(p);
+  p->setParent(s);
+  p->setLeft(replacment);
+  replacement->setParent(p);
+
+  if(srCheck==true){
+    s->setRight(sr);
+    sr->setParent(s);
+  }
+  if(slCheck == true){
+    p->setRight(sl);
+    sl->setParent(p);
+  }
+  
+}
+void deleteCaseTwo(Tree* &head,  Tree* &replacement){
+  Tree* p=NULL;
+  Tree* s=NULL;
+  Tree* sl=NULL;
+  Tree* gp=NULL;
+  Tree* sr=NULL;
+  bool slCheck = false;
+  bool srCheck=false;
+  //char pColor;
+  //char sColor;
+  if(replacement->getParent()!=NULL){
+    p = replacement->getParent();
+    if(p->getRight() == replacement){//if replacement is to the right of p
+      if(p->getLeft()!=NULL&&p->getLeft()->getChild()->getColor()=='R'){
+	//CASE OCCOURS
+	cout<<"CASE TWOOOO"<<endl;
+	cout<<"p: "<<p->getChild()->getRoot();
+	s = p->getLeft();
+	//deal with SL and SR
+	cout<<"1"<<endl;
+	if(s->getLeft()!=NULL){
+	  sl=s->getLeft();
+	  slCheck=true;
+	}
+	else if(s->getRight()!=NULL){
+	  sr=s->getRight();
+	  srCheck=true;
+	}/////////////////////
+	cout<<"2"<<endl;
+	///if p is head
+	if(p==head){
+	  head=s;
+	  s->setParent(NULL);
+	}
+	//cout<<"3"<<endl;
+	else if(p!=head){
+	  gp = p->getParent();
+	  cout<<"gp: "<<gp->getChild()->getRoot()<<endl;
+	  if(gp->getRight()==p){
+	    gp->setRight(s);
+	    s->setParent(gp);
+	  }
+	  else if(gp->getLeft()==p){
+	    gp->setLeft(s);
+	    s->setParent(gp);
+	  }
+	}/////////
+	cout<<"4"<<endl;
+	cout<<"gpL: "<<gp->getLeft()->getChild()->getRoot()<<endl;
+	cout<<"p: "<<p->getChild()->getRoot()<<endl;
+	cout<<"s: "<<s->getChild()->getRoot()<<endl;
+	//	printTree2(head,0);
+	
+	s->setRight(p);
+	
+	cout<<"What you wanted: "<<s->getRight()->getChild()->getRoot()<<endl;
+	//printTree2(head,0);
+	p->setParent(s);
+	p->setRight(replacement);
+	replacement->setParent(p);
+	cout<<"5"<<endl;
+	if(srCheck==true){
+	  p->setLeft(sr);
+	  sr->setParent(p);
+	  
+	  
+	}
+	cout<<"6"<<endl;
+	if(slCheck==true){
+	  s->setLeft(sl);
+	  sl->setParent(s);
+	}
+	cout<<"7"<<endl;
+	//swap colors
+	//	pColor = p->getChild()->getColor();
+	//	sColor = s->getChild()->getColor();
+	//	p->getChild()->setColor(sColor);
+	//	s->getChild()->setColor(pColor);
+	//	deleteCaseThree(head,replacement);
+	
+      }
 
 
       
     }
+    else if(p->getLeft() == replacement){//if replacement is to the left of p
+      // Tree* gp;
+      if(p->getRight()!=NULL&&p->getRight()->getChild()->getColor()=='R'){//sibling is right RIGHT CASE TWO
+	//CASE OCCOURs
+	cout<<"CASE TWO"<<endl;
+	s = p->getRight();
+	
+	//deal with SL and SR                                                                                                                           
+        if(s->getLeft()!=NULL){
+          sl=s->getLeft();
+          slCheck=true;
+        }
+        if(s->getRight()!=NULL){
+          sr=s->getRight();
+          srCheck=true;
+        }
+	/////////////////////////
+	if(p==head){
+	  head=s;
+	  s->setParent(NULL);
+	}
+
+	else if(p!=head){
+	  gp = head;
+
+	  if(gp->getLeft() == p){
+	    gp->setLeft(s);
+	    s->setParent(gp);
+	  }
+	  else if(gp->getRight() == p){
+	    gp->setRight(s);
+	    s->setParent(gp);
+	  }
+
+	}
+	///////////////////
+	s->setLeft(p);
+	p->setParent(s);
+	p->setLeft(replacement);
+	replacement->setParent(p);
+	
+	if(slCheck==true){
+	  p->setLeft(sl);
+	  sl->setParent(p);
+
+	}
+	if(srCheck == true){
+	  s->setRight(sr);
+	  sr->setParent(s);
+	  
+	}
+	//swap colors
+	//	pColor = p->getChild()->getColor();
+	// sColor = s->getChild()->getColor();
+	// p->getChild()->setColor(sColor);
+	// s->getChild()->setColor(pColor);
+	//	deleteCaseThree(head,replacement);
+      }
+      
+    }
+
+ }
+}///
+
+
+void deleteCaseThree(Tree* &head, Tree* &replacement){//sibling is black
+  Tree* p;
+  Tree* s;
+  if(replacement->getParent()!=NULL){
+    p = replacement->getParent();
+    if(p->getRight()==replacement){
+      if(p->getLeft()!=NULL&&p->getRight()->getChild()->getColor()=='B'){
+	s=p->getLeft();
+	s->getChild()->setColor('R');
+      }
+      
+    }
+    else if(p->getLeft() == replacement){
+      if(p->getRight()!=NULL&&p->getRight()->getChild()->getColor()=='B'){
+	s=p->getRight();
+	s->getChild()->setColor('R');
+	  
+      }
+    }
+    
+
+
+    
+  }
+
+  
+
+}
+void deleteCaseFour(Tree* &head, Tree* &replacement){//p is red s and s's children are red
+  Tree* p;
+  Tree* s;
+  Tree* sr;
+  Tree* sl;
+  if(replacement->getParent()!=NULL&&replacement->getParent()->getChild()->getColor() == 'R'){
+    p = replacement->getParent();
+    if(p->getLeft()==replacement){
+      if(p->getRight()!=NULL){
+	s = p->getRight();
+	if(s->getLeft()==NULL || s->getLeft()->getChild()->getColor() == 'B'){
+	  if(s->getRight()==NULL|| s->getRight()->getChild()->getColor()== 'B'){
+	    p->getChild()->setColor('B');
+	    s->getChild()->setColor('R');
+	  }
+	}
+	
+      }
+      
+    }
+    else if(p->getRight()==replacement){
+      if(p->getLeft()!=NULL){
+	s = p->getLeft();
+	if(s->getLeft()==NULL || s->getLeft()->getChild()->getColor() == 'B'){
+          if(s->getRight()==NULL|| s->getRight()->getChild()->getColor()== 'B'){
+            p->getChild()->setColor('B');
+            s->getChild()->setColor('R');
+          }
+        }
+
+
+	
+      }
+    }
+    
   }
   
-}//end of function
+
+}
+
+void deleteCaseFive(Tree* &head, Tree* &replacement){
+  Tree* p;
+  Tree* s;
+  Tree* sr;
+  Tree* sl;
+  bool slCheck=false;
+  bool srCheck=false;
+
+  
+  if(replacement->getParent()!=NULL){
+    p=replacement->getParent();
+    if(p->getRight()==replacement){//s is to teh left
+      if(p->getLeft()!=NULL){
+	s = p->getLeft();
+	if(s->getChild()->getColor()=='B'){//when sr is read and s is black
+	  if((s->getLeft()==NULL||s->getLeft()->getChild()->getColor()=='B')&&s->getRight()!=NULL&&s->getRight()->getChild()->getColor()=='R'){
+	    cout<<"CASE FIVE"<<endl;
+	    if(s->getLeft()!=NULL){
+	    sl = s->getLeft();
+	    slCheck=true;
+	    }
+	    
+	    sr = s->getRight();
+
+	    p->setLeft(sr);
+	    sr->setParent(p);
+	    sr->setLeft(s);
+	    s->setParent(sr);
+	    if(slCheck==true){
+	    s->setLeft(sl);
+	    sl->setParent(s);
+	    }
+
+	    s->getChild()->setColor('R');
+	    sr->getChild()->setColor('B');
+
+	    cout<<"head: "<<head->getChild()->getRoot()<<endl;
+
+	    
+	  }
+	}
+
+	
+      }
+      
+      
+    }
+    else if(p->getLeft()==replacement){
+
+      if(p->getRight()!=NULL){
+	s = p->getRight();
+	if(s->getChild()->getColor()=='B'){//when s is black and sl is read
+          if(s->getLeft()!=NULL&&s->getLeft()->getChild()->getColor()=='R'&&(s->getRight()==NULL||s->getRight()->getChild()->getColor()=='B')){
+	    cout<<"CASE FIVE"<<endl;
+	    sl = s->getLeft();
+	    // printTree2(head,0);
+	    if(s->getRight()!=NULL){
+            sr = s->getRight();
+	    srCheck=true;
+	    }
+	    // printTree2(head,0);
+	    p->setRight(sl);
+	    printTree2(head,0);
+	    sl->setParent(p);
+	    sl->setRight(s);
+	    s->setParent(sl);
+	    if(srCheck==true){
+	      s->setRight(sr);
+	      sr->setParent(s);
+	    }
+
+	    s->getChild()->setColor('R');
+	    sl->getChild()->setColor('B');
+	    // printTree2(head,0);
+	    cout<<"head: "<<head->getChild()->getRoot()<<endl;
+          }
+        }
+
+	
+      }
+      
+    }
+
+  }
+
+ 
+}
+
+void deleteCaseSix(Tree* &head, Tree* &replacement){
+  Tree* p;
+  Tree* s;
+  Tree* sl;
+  Tree* sr;
+  Tree* gp;
+  if(replacement->getParent()!=NULL){
+    p=replacement->getParent();
+
+    if(p->getRight() == replacement){//node is on the right
+      if(p->getLeft()!=NULL&&p->getLeft()->getChild()->getColor()=='B'){
+	s=p->getLeft();
+	if(s->getLeft()!=NULL&&s->getLeft()->getChild()->getColor()=='R'){
+
+	  //////////////////////////////////
+	  if(p==head){
+	    head = s;
+	    s->setParent(NULL);
+	  }
+	  else if(p!=head){
+	    gp = p->getParent();
+	    if(gp->getRight()==p){
+	      gp->setRight(s);
+	      s->setParent(gp);
+	    }
+	    else if(gp->getLeft()==p){
+	      gp->setLeft(s);
+	      s->setParent(gp);
+	    }
+	  }
+	  //////////////////////////////////////////
+	  s->setLeft(sl);
+	  sl->setParent(s);
+	  s->setRight(p);
+	  p->setParent(s);
+	  p->setRight(replacement);
+	  replacement->setParent(p);
+	  
+	  char pColor = p->getChild()->getColor();
+          char sColor=s->getChild()->getColor();
+          p->getChild()->setColor(sColor);
+          s->getChild()->setColor(pColor);
+	  
+	  
+	}
+      }
+      
+    }
+    else if(p->getLeft() == replacement){//node is on the left
+      if(p->getRight()!=NULL&&p->getRight()->getChild()->getColor()=='B'){
+	s=p->getRight();
+	if(s->getRight()!=NULL&&s->getRight()->getChild()->getColor()=='R'){
+	  //////////////////////////////////                                                                                                             
+          if(p==head){
+            head = s;
+            s->setParent(NULL);
+          }
+          else if(p!=head){
+            gp = p->getParent();
+            if(gp->getRight()==p){
+	      gp->setRight(s);
+              s->setParent(gp);
+            }
+            else if(gp->getLeft()==p){
+	      gp->setLeft(s);
+              s->setParent(gp);
+            }
+          }
+          ////////////////////////////////////////// 
+	  s->setLeft(p);
+	  p->setParent(s);
+	  p->setLeft(replacement);
+	  replacement->setParent(p);
+	  s->setRight(sr);
+	  sr->setParent(s);
+
+	  char pColor = p->getChild()->getColor();
+	  char sColor=s->getChild()->getColor();
+	  p->getChild()->setColor(sColor);
+	  s->getChild()->setColor(pColor);
+	}
+
+	
+      }
+      
+    }
 
 
+    
+  }
+
+
+  
+
+}
