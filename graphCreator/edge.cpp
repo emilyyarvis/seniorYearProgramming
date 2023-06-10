@@ -1,5 +1,5 @@
 #include <iostream>
-#include "vertex.h"
+//#include "vertex.h"
 #include "edge.h"
 
 using namespace std;
